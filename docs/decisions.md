@@ -15,12 +15,15 @@
 - Items have a free-text "comes with" field. Parts that get borrowed separately are listed as their own items.
 - Either the borrower or the owner can mark an item returned. The owner can confirm. The item is available again right away. Disputes become issues.
 - Items use a short fixed category list that stewards can extend.
+- Grocery runner fee is a flat amount per household on the run.
+- Teen runners are deferred. Adult runners only during the pilot. Revisit at the check-in.
+- Growth during the pilot is capped by a household count. Going past it takes a check-in conversation.
 - Garage share return dates are optional. The borrower can set one, and it's shown on the item. No reminders.
 
 ## Open
-- How to stay open while staying safe as the group grows.
-- Grocery runner fee amount.
-- Teen runners: minimum age, driving, parent sign-off.
+- How to stay open while staying safe once the group outgrows the pilot cap.
+- Grocery runner fee amount (flat per household).
+- Pilot household cap: what number?
 - Long term: free software with paid setup/consulting for other neighborhoods? First, make something people want.
 - Streaming logins: worth trying at all?
 - Car share: insurance answer.
