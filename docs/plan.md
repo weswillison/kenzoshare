@@ -15,7 +15,7 @@ Goal: cut individual grocery trips from weekly to about twice a month.
 - Costco: members claim portions of bulk items. An item is bought once it's fully claimed.
 - Aldi/Lidl: one person shops for several households from a shared list.
 - Members pay their share upfront.
-- Whoever does the run delivers and gets a small per-household fee (amount TBD).
+- Whoever does the run delivers and gets $3 from each household on the run, on top of groceries and tax. We'll see how that works and adjust.
 - Could become a paid job for a teen driver later.
 
 ## Later
@@ -28,7 +28,7 @@ Goal: cut individual grocery trips from weekly to about twice a month.
 - One login per person.
 - Profiles show contact info and borrowing and lending history.
 - Only members can see the site.
-- Invite-only during the pilot. Any member can invite a neighbor, and the site remembers who invited whom. Grows only as far as it stays manageable.
+- Invite-only during the pilot. Any member can invite a neighbor, and the site remembers who invited whom. We'll start with up to 12 households and talk before growing past that.
 - No payments through the site. Venmo, Cash App, or cash.
 - Wes builds and maintains it, Preston helps. Code and plans live in a shared repo.
 
