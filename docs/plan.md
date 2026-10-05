@@ -7,6 +7,7 @@ Things that would live in a garage or basement if we had one: tools, ladders, pa
 - Items stay with their owners and are listed on the site.
 - Each item lists a replacement cost, so borrowers know what they'd owe if it's lost or broken.
 - Borrowing, returning, and handing off to another member are marked on the site.
+- You can set a return date when you borrow, but you don't have to.
 - Books, games, and puzzles get added once the first category is working.
 
 ## Phase 2: Shared grocery runs
@@ -27,13 +28,14 @@ Goal: cut individual grocery trips from weekly to about twice a month.
 - One login per person.
 - Profiles show contact info and borrowing and lending history.
 - Only members can see the site.
-- Invite-only during the pilot. Grows only as far as it stays manageable.
+- Invite-only during the pilot. Any member can invite a neighbor, and the site remembers who invited whom. Grows only as far as it stays manageable.
 - No payments through the site. Venmo, Cash App, or cash.
 - Wes builds and maintains it, Preston helps. Code and plans live in a shared repo.
 
 ## Ground rules
 - Return items clean and in the same condition.
 - Report breakage or loss to the owner and resolve it together. The listed replacement cost is the starting point.
+- Lend only what you could live without. During the pilot there's no shared fund to cover a loss. Owner and borrower work it out between them.
 - Update the site when an item changes hands.
 - Lending is optional.
 

@@ -13,4 +13,4 @@ The comps assume a central library with staff and a storefront. KenzoShare items
 
 ## To do
 - Demo myTurn.
-- Read Circulate's data model before finalizing v1.
+- ~~Read Circulate's data model before finalizing v1.~~ Done, notes in v1-garage-share.md.
