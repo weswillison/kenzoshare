@@ -14,7 +14,7 @@
 - Owners can pause lending on an item, open-ended or with a snooze (1 week, 1 month, custom). When a snooze ends, the item stays paused and the owner is prompted on their next visit. No email.
 - Items have a free-text "comes with" field. Parts that get borrowed separately are listed as their own items.
 - Either the borrower or the owner can mark an item returned. The owner can confirm. The item is available again right away. Disputes become issues.
-- Items use a short fixed category list that stewards can extend.
+- Garage Share starts with three categories: Tools (ladders included), Gardening, Outdoors & sports. Stewards can add more.
 - Grocery runner fee is $3 per household per run, on top of groceries and tax. Trial amount, revisit at the check-in.
 - Teen runners are deferred. Adult runners only during the pilot. Revisit at the check-in.
 - Pilot cap is 12 households. Stewards watch the number (the app doesn't block invites). Going past it takes a check-in conversation.

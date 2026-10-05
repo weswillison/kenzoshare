@@ -9,7 +9,7 @@ Know what's available, borrow it easily, and always know who has it.
 - Borrow, return, hand off directly to another member
 - Either the borrower or the owner can mark an item returned. The owner can confirm a return. The item is available again as soon as it's marked returned. If the owner says it never came back, that's an issue.
 - Owner can pause lending on an item, open-ended or snoozed for 1 week, 1 month, or a custom length. When a snooze ends, the item stays paused and the owner sees a prompt on their next visit ("Lend it again?"). No email.
-- Categories from a short fixed list. Stewards can add to it.
+- Categories from a short fixed list: Tools, Gardening, Outdoors & sports. Ladders go in Tools. Stewards can add more.
 - Optional return date when borrowing, shown on the item. No reminders.
 - Each item shows who has it now and since when
 - Replacement cost shown before borrowing
@@ -31,4 +31,4 @@ From reading Circulate's schema (docs/comps.md):
 - Skip Circulate's borrow policies, fines, holds, and renewals. They serve a staffed library.
 
 ## Open
-- Final starting category list (draft: tools, ladders & yard, outdoor & camping, kitchen, kids). Books, games, and puzzles come later.
+- Books, games, and puzzles come later, as new categories.
