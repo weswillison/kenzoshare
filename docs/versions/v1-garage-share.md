@@ -7,8 +7,9 @@ Know what's available, borrow it easily, and always know who has it.
 - List an item: name, category, photo, condition, replacement cost, where it lives, what comes with it (free text, e.g. "charger, two batteries, impact bits"), notes
 - Browse and search items
 - Borrow, return, hand off directly to another member
-- Either the borrower or the owner can mark an item returned. The owner can confirm a return.
-- Owner can pause lending on an item, open-ended or snoozed for 1 week, 1 month, or a custom length
+- Either the borrower or the owner can mark an item returned. The owner can confirm a return. The item is available again as soon as it's marked returned. If the owner says it never came back, that's an issue.
+- Owner can pause lending on an item, open-ended or snoozed for 1 week, 1 month, or a custom length. When a snooze ends, the item stays paused and the owner sees a prompt on their next visit ("Lend it again?"). No email.
+- Categories from a short fixed list. Stewards can add to it.
 - Optional return date when borrowing, shown on the item. No reminders.
 - Each item shows who has it now and since when
 - Replacement cost shown before borrowing
@@ -30,6 +31,4 @@ From reading Circulate's schema (docs/comps.md):
 - Skip Circulate's borrow policies, fines, holds, and renewals. They serve a staffed library.
 
 ## Open
-- When a snooze ends, what happens: a ping to the owner, automatic resume, or a prompt the next time they open the site?
-- Is an item available again as soon as the borrower marks it returned, or only after the owner confirms?
-- Categories after garage stuff: books, games, puzzles.
+- Final starting category list (draft: tools, ladders & yard, outdoor & camping, kitchen, kids). Books, games, and puzzles come later.

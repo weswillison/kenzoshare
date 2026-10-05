@@ -11,9 +11,10 @@
 - No personal info about neighbors in the repo.
 - Any member can invite a new member during the pilot. The inviter is recorded as the new member's voucher.
 - Losses beyond replacement cost are at the owner's own risk during the pilot. Borrower and owner settle it together, starting from the listed replacement cost. No loss fund or join fee for now. Revisit at the check-in.
-- Owners can pause lending on an item, open-ended or with a snooze (1 week, 1 month, custom).
+- Owners can pause lending on an item, open-ended or with a snooze (1 week, 1 month, custom). When a snooze ends, the item stays paused and the owner is prompted on their next visit. No email.
 - Items have a free-text "comes with" field. Parts that get borrowed separately are listed as their own items.
-- Either the borrower or the owner can mark an item returned. The owner can confirm.
+- Either the borrower or the owner can mark an item returned. The owner can confirm. The item is available again right away. Disputes become issues.
+- Items use a short fixed category list that stewards can extend.
 - Garage share return dates are optional. The borrower can set one, and it's shown on the item. No reminders.
 
 ## Open
