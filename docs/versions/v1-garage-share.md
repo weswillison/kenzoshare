@@ -1,4 +1,4 @@
-# v1 Garage share
+# v1 Garage Share
 
 ## Goal
 Know what's available, borrow it easily, and always know who has it.

@@ -2,7 +2,7 @@
 
 kenzoshare.org: a sharing site for neighbors, starting with a small pilot on one block in Kensington. Free, no ads, members only, open source.
 
-## Phase 1: Garage share
+## Phase 1: Garage Share
 Things that would live in a garage or basement if we had one: tools, ladders, paddle boards, camping gear.
 - Items stay with their owners and are listed on the site.
 - Each item lists a replacement cost, so borrowers know what they'd owe if it's lost or broken.
@@ -10,7 +10,7 @@ Things that would live in a garage or basement if we had one: tools, ladders, pa
 - You can set a return date when you borrow, but you don't have to.
 - Books, games, and puzzles get added once the first category is working.
 
-## Phase 2: Shared grocery runs
+## Phase 2: Grocery Share
 Goal: cut individual grocery trips from weekly to about twice a month.
 - Costco: members claim portions of bulk items. An item is bought once it's fully claimed.
 - Aldi/Lidl: one person shops for several households from a shared list.
@@ -41,7 +41,7 @@ Goal: cut individual grocery trips from weekly to about twice a month.
 
 ## Timeline
 1. Site setup. Collect lists of garage-share items.
-2. Garage share trial, about 2 months.
+2. Garage Share trial, about 2 months.
 3. First shared grocery run.
 4. Check-in meeting.
 

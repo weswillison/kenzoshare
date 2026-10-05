@@ -4,7 +4,7 @@
 - Open source under AGPL-3.0. Copies and hosted versions must stay open, so nobody can turn it into a closed paid service.
 - Build our own, after reviewing comps (`comps.md`).
 - Pilot is invite-only on one block. Grow only as feasible.
-- Phase 1 is garage share. Other categories come after.
+- Phase 1 is Garage Share, phase 2 is Grocery Share. Other sections come after.
 - Every item stores a replacement cost, visible to borrowers.
 - No payments through the site.
 - No numeric trust score. Record history and issues, not ratings.
@@ -18,7 +18,7 @@
 - Grocery runner fee is $3 per household per run, on top of groceries and tax. Trial amount, revisit at the check-in.
 - Teen runners are deferred. Adult runners only during the pilot. Revisit at the check-in.
 - Pilot cap is 12 households. Stewards watch the number (the app doesn't block invites). Going past it takes a check-in conversation.
-- Garage share return dates are optional. The borrower can set one, and it's shown on the item. No reminders.
+- Garage Share return dates are optional. The borrower can set one, and it's shown on the item. No reminders.
 
 ## Open
 - How to stay open while staying safe once the group outgrows the pilot cap.

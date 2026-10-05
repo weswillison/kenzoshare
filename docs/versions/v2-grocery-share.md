@@ -1,4 +1,4 @@
-# v2 Grocery runs
+# v2 Grocery Share
 
 ## Goal
 Cut individual grocery trips from weekly to about twice a month.
