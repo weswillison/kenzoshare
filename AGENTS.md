@@ -4,11 +4,12 @@
 kenzoshare.org is a sharing site for a small group of neighbors in Kensington, Philadelphia, piloting on one block. It covers things hard to do or own alone: a garage share of tools and gear, shared grocery runs, and later a car, shared meals, and childcare. The plan is in [docs/plan.md](docs/plan.md). Decisions and open questions are in [docs/decisions.md](docs/decisions.md).
 
 ## Current state and starting work
-This repository is planning only: no application code, dependency manifest, migrations, seed script, or CI exists yet. The stack and data model below describe the planned application.
+This repository is planning only: no application code, dependency manifest, migrations, seed script, or CI exists yet. The stack and data model below describe the planned application. Update this section and Verification when that changes.
 
 - Read this file, [docs/plan.md](docs/plan.md), [docs/decisions.md](docs/decisions.md), and the relevant version spec before making changes.
 - Work only on the requested issue or version. Documentation work does not authorize scaffolding or feature implementation.
-- For v0 implementation, use [docs/prompts/kickoff.md](docs/prompts/kickoff.md) and [docs/versions/v0-core.md](docs/versions/v0-core.md). Present the structure, SQL and RLS plan, accounts and environment variables, and open questions for approval before scaffolding. Stop after v0; do not start v1.
+- Before implementing any version, present the structure, SQL and RLS plan, accounts and environment variables, and open questions, and wait for approval before scaffolding or writing migrations. Stop when that version is done; do not start the next one.
+- For v0, use [docs/prompts/kickoff.md](docs/prompts/kickoff.md) and [docs/versions/v0-core.md](docs/versions/v0-core.md).
 - Record durable product decisions and open questions in docs/decisions.md. Do not rely on private agent memory or previous chats to carry project decisions.
 
 ## Values (these override technical preferences)
@@ -63,7 +64,7 @@ Future modules add their own tables and write to the same activity_events and is
 ## Shared contribution workflow
 - Keep changes focused and commits small. Use commit subjects in the form `type: short imperative description`, with `docs`, `feat`, `fix`, `chore`, or `test` as the type. Example: `docs: share project instructions across agents`.
 - In a pull request or handoff, explain what changed and why, which checks ran, and any limitations or unresolved questions. Do not claim checks passed if they were unavailable or not run.
-- Keep shared instructions here. Tool-specific entry points should reference this file rather than copy it; CLAUDE.md imports it for Claude Code. If an agent does not discover AGENTS.md, explicitly tell it to read this file at the start of a session.
+- Keep shared instructions here. Tool-specific entry points should reference this file rather than copy it; CLAUDE.md imports it for Claude Code.
 - There are no repository skills today. If skills are added, maintain one shared collection, document its source and compatibility limitations, and add discovery adapters only for the agents contributors actually use.
 
 ## Verification
@@ -71,6 +72,6 @@ There are no runnable application tests, lint, typecheck, build, development, mi
 
 - Run `git diff --check`.
 - Review the diff for preserved product values, privacy rules, approval boundaries, and scope. Check that local document links resolve and instructions match the actual repository state.
-- When changing agent entry points, check a fresh session in Claude Code and another coding agent. Ask each to identify scope, privacy rules, approval boundaries, and available checks from repository files alone; report agent versions, results, and limitations in the pull request or handoff.
+- When changing agent entry points, check a fresh session in Claude Code and another coding agent. Ask each to identify scope, privacy rules, approval boundaries, and available checks from repository files alone; report agent versions, results, and limitations in the pull request or handoff. If a second agent isn't available, say that this check was not run.
 
 When application code is added, document reproducible installation, development, migration, seeding, and verification commands, add .env.example with placeholders only, and run the same verification checks in CI. Keep commands current in shared documentation.

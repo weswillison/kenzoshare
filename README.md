@@ -25,7 +25,7 @@ Follow the shared contribution and verification conventions in AGENTS.md, includ
 
 ## Verification
 
-For now, run `git diff --check` and review documentation links, consistency, privacy, and scope. No install, dev, test, lint, typecheck, build, migration, or seed command exists yet. When application code is added, document reproducible commands, provide .env.example with placeholders, and run the same verification checks in CI.
+See the Verification section of [AGENTS.md](AGENTS.md) for the current checks.
 
 ## Privacy rule
 
