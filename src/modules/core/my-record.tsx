@@ -28,7 +28,7 @@ export async function MyRecord() {
 
   return (
     <>
-      <Section title={t.profile.record} info={t.profile.recordInfo} infoId="record-info">
+      <Section title={t.profile.record} info={t.profile.recordInfo}>
         {counts.length === 0 ? <Empty /> : counts.map((s) => (
           <Row key={`${s.module}-${s.event_type}`}>
             <span>{t.events[s.event_type] ?? t.stats[s.event_type] ?? s.event_type}</span>

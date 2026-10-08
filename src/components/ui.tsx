@@ -1,29 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { t } from "@/strings/en";
-
-// Uses the browser's built-in popover: no JavaScript, closes on tap outside.
-export function Info({ id, children }: { id: string; children: ReactNode }) {
-  return (
-    <>
-      <button
-        type="button"
-        popoverTarget={id}
-        aria-label={t.moreInfo}
-        className="inline-flex size-6 items-center justify-center rounded-full border border-line text-xs text-muted"
-      >
-        i
-      </button>
-      <div
-        id={id}
-        popover="auto"
-        className="m-auto w-[calc(100%-2rem)] max-w-sm rounded border border-line bg-bg p-4 text-fg shadow-lg backdrop:bg-black/20"
-      >
-        {children}
-      </div>
-    </>
-  );
-}
+import { Heading } from "./heading";
 
 export function Page({ title, info, action, children }: {
   title?: string;
@@ -33,32 +11,21 @@ export function Page({ title, info, action, children }: {
 }) {
   return (
     <main className="mx-auto w-full max-w-xl px-4 pb-16">
-      {title && (
-        <div className="flex items-center gap-2 pt-6 pb-3">
-          <h1 className="text-xl font-semibold">{title}</h1>
-          {info && <Info id="page-info">{info}</Info>}
-          <div className="ml-auto">{action}</div>
-        </div>
-      )}
+      {title && <Heading level={1} title={title} info={info} action={action} />}
       {children}
     </main>
   );
 }
 
-export function Section({ title, info, infoId, action, children }: {
+export function Section({ title, info, action, children }: {
   title: string;
   info?: ReactNode;
-  infoId?: string;
   action?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <section className="pt-6">
-      <div className="flex items-center gap-2 border-b border-line pb-1">
-        <h2 className="font-semibold">{title}</h2>
-        {info && <Info id={infoId ?? `info-${title}`}>{info}</Info>}
-        <div className="ml-auto">{action}</div>
-      </div>
+      <Heading level={2} title={title} info={info} action={action} />
       {children}
     </section>
   );
