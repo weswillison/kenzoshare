@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(28);
+select plan(31);
 
 -- Start from an empty database so seed data doesn't change the counts.
 -- Everything here is rolled back at the end.
@@ -91,6 +91,24 @@ select lives_ok($$ update public.household_join_requests set status = 'approved'
   'a current household member can approve a join request');
 select lives_ok($$ update public.issues set status = 'resolved', resolution_note = 'Talked it through' where id = '20000000-0000-0000-0000-000000000001' $$,
   'the reporter can resolve an issue');
+
+-- Gus asks to join Corner house; Cam (who lives there) says no.
+reset role;
+insert into auth.users (id, email, email_confirmed_at, aud, role) values
+  ('00000000-0000-0000-0000-000000000010', 'gus@example.test', now(), 'authenticated', 'authenticated');
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-000000000010","role":"authenticated"}', true);
+insert into public.household_join_requests (household_id) values ('10000000-0000-0000-0000-000000000002');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
+select lives_ok($$ update public.household_join_requests set status = 'declined' where profile_id = '00000000-0000-0000-0000-000000000010' $$,
+  'a current household member can decline a join request');
+update public.household_join_requests set status = 'approved' where profile_id = '00000000-0000-0000-0000-000000000010';
+reset role;
+select is((select status from public.household_join_requests where profile_id = '00000000-0000-0000-0000-000000000010'),
+  'declined', 'a decided request cannot be flipped');
+select is((select household_id from public.profiles where id = '00000000-0000-0000-0000-000000000010'), null,
+  'declining leaves the requester without a household');
+set local role authenticated;
 
 -- ---------------------------------------------------------------- as Dee (steward)
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
