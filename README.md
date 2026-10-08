@@ -2,7 +2,7 @@
 
 A sharing site for a small group of neighbors in Kensington, Philadelphia. Pilot on one block. Open source under AGPL-3.0 (see `LICENSE`).
 
-Status: planning only. No application code or runnable application checks yet.
+Status: v0 (logins, people, households, invites, problems) runs locally. Not deployed yet.
 
 ## Docs
 
@@ -26,6 +26,27 @@ Follow the shared contribution and verification conventions in AGENTS.md, includ
 ## Verification
 
 See the Verification section of [AGENTS.md](AGENTS.md) for the current checks.
+
+## Running locally
+
+Needs Node 22, Docker (or Colima), and the [Supabase CLI](https://supabase.com/docs/guides/local-development).
+
+```bash
+npm install
+supabase start
+cp .env.example .env.local    # fill in keys from `supabase status`
+npm run dev
+```
+
+Open http://localhost:3000 and sign in with any email from `supabase/seed.sql`, such as `sam@example.test` (a steward). The sign-in link arrives in Mailpit at http://127.0.0.1:54324.
+
+## Deploying
+
+Not done yet. The plan: a free Supabase project and a free Vercel project.
+
+1. Supabase: create the project, run `supabase link` and `supabase db push`, turn off public signups, paste `supabase/templates/*.html` into the email templates, set custom SMTP (Supabase's built-in email only reaches your own team), and set the site URL to https://kenzoshare.org.
+2. Vercel: import the repo and set the variables from `.env.example`. `vercel.json` schedules a daily ping so the free database doesn't pause.
+3. Make the first stewards by setting `role = 'steward'` on their profiles in the Supabase dashboard.
 
 ## Privacy rule
 
