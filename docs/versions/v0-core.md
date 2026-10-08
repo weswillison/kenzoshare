@@ -8,7 +8,8 @@ People can log in, see who's in the group, and have a personal record that later
 - Invite a neighbor (records who invited them)
 - Profile: edit info, see own activity, stats, and issues
 - Household page
-- Member directory with contact info and contribution counts
+- Member directory with contact info
+- Choose a household on first login: start a new one, or ask to join an existing one (a current member approves)
 - Report and resolve an issue
 
 ## Not in scope

@@ -19,6 +19,12 @@
 - Teen runners are deferred. Adult runners only during the pilot. Revisit at the check-in.
 - Pilot cap is 12 households. Stewards watch the number (the app doesn't block invites). Going past it takes a check-in conversation.
 - Garage Share return dates are optional. The borrower can set one, and it's shown on the item. No reminders.
+- New members choose their household on first login: start a new one, or ask to join an existing one. Any current member of that household approves or declines. Until then they're a full member without a household. The inviter doesn't choose.
+- Any of the reporter, the person an issue is about, or a steward can resolve an issue.
+- Membership is active or left. No "paused" status: membership is free, and pausing items covers being away. Someone who left can still see their own record.
+- Usage is tracked through the activity log, per person and for the group. Per-person counts are never shown as a score, never shown in lists, and people are never ranked or sorted by activity. Profiles show plain facts from a person's history. A group usage view (totals, no names) comes later, around the check-in.
+- v0 is tested by Wes and Preston only. Neighbors see the site once v1 (Garage Share) is done.
+- First stewards: Wes and Preston.
 
 ## Open
 - How to stay open while staying safe once the group outgrows the pilot cap.
