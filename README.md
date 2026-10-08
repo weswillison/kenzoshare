@@ -1,6 +1,6 @@
 # KenzoShare
 
-A sharing site for a small group of neighbors in Kensington, Philadelphia. Pilot on one block. Open source (license TBD).
+A sharing site for a small group of neighbors in Kensington, Philadelphia. Pilot on one block. Open source under AGPL-3.0 (see `LICENSE`).
 
 Status: planning only. No application code or runnable application checks yet.
 

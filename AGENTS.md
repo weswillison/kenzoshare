@@ -1,7 +1,7 @@
 # KenzoShare
 
 ## What this is
-kenzoshare.org is a sharing site for a small group of neighbors in Kensington, Philadelphia, piloting on one block. It covers things hard to do or own alone: a garage share of tools and gear, shared grocery runs, and later a car, shared meals, and childcare. The plan is in [docs/plan.md](docs/plan.md). Decisions and open questions are in [docs/decisions.md](docs/decisions.md).
+kenzoshare.org is a sharing site for a small group of neighbors in Kensington, Philadelphia, piloting on one block. It covers things hard to do or own alone: Garage Share (tools and gear), Grocery Share (shared grocery runs), and later a car, shared meals, and childcare. The plan is in [docs/plan.md](docs/plan.md). Decisions and open questions are in [docs/decisions.md](docs/decisions.md).
 
 ## Current state and starting work
 This repository is planning only: no application code, dependency manifest, migrations, seed script, or CI exists yet. The stack and data model below describe the planned application. Update this section and Verification when that changes.
@@ -31,8 +31,8 @@ This repository is planning only: no application code, dependency manifest, migr
 ## Versions
 Build one version at a time. Each version has a spec in [docs/versions/](docs/versions/). Do not implement a module until asked. Each module lives in its own folder and can be switched on or off in one config file.
 - v0 Core: login, households, profiles, invites, activity log, issues, member stats.
-- v1 Garage share: items with replacement cost, borrow, return, hand off, who has what.
-- v2 Grocery runs: Costco portion claims and Aldi/Lidl shared lists, runs, runner fee, who owes what.
+- v1 Garage Share: items with replacement cost, borrow, return, hand off, who has what.
+- v2 Grocery Share: Costco portion claims and Aldi/Lidl shared lists, runs, runner fee, who owes what.
 - v3 Car: blocked until insurance is settled.
 - v4 Meals: cooking rotation and dietary needs.
 - v5 Childcare: sitter requests and hour swaps. Regular shared care blocked until PA licensing is checked.
