@@ -4,7 +4,7 @@
 kenzoshare.org is a sharing site for a small group of neighbors in Kensington, Philadelphia, piloting on one block. It covers things hard to do or own alone: Garage Share (tools and gear), Grocery Share (shared grocery runs), and later a car, shared meals, and childcare. The plan is in [docs/plan.md](docs/plan.md). Decisions and open questions are in [docs/decisions.md](docs/decisions.md).
 
 ## Current state and starting work
-This repository is planning only: no application code, dependency manifest, migrations, seed script, or CI exists yet. The stack and data model below describe the planned application. Update this section and Verification when that changes.
+v0 Core is built and runs locally: Next.js app in `src/`, schema and RLS in `supabase/migrations/`, RLS tests in `supabase/tests/`, fake seed data in `supabase/seed.sql`. It is not deployed yet, and there is no CI yet. Update this section and Verification when that changes.
 
 - Read this file, [docs/plan.md](docs/plan.md), [docs/decisions.md](docs/decisions.md), and the relevant version spec before making changes.
 - Work only on the requested issue or version. Documentation work does not authorize scaffolding or feature implementation.
@@ -21,7 +21,7 @@ This repository is planning only: no application code, dependency manifest, migr
 - No money moves through the site. The site may record what is owed, never process payments.
 - Open source. Never commit secrets, real member data, or neighbors' personal info. Seed data is fake.
 
-## Planned stack
+## Stack
 - Next.js (App Router) with TypeScript
 - Supabase: Postgres, Auth with email magic links (no passwords), Row Level Security on every table, Storage for item photos
 - Tailwind
@@ -69,13 +69,28 @@ Future modules add their own tables and write to the same activity_events and is
 - There are no repository skills today. If skills are added, maintain one shared collection, document its source and compatibility limitations, and add discovery adapters only for the agents contributors actually use.
 
 ## Verification
-There are no runnable application tests, lint, typecheck, build, development, migration, or seeding commands yet. For documentation changes:
+Local setup needs Node 22, Docker (or Colima), and the Supabase CLI.
 
-- Run `git diff --check`.
-- Review the diff for preserved product values, privacy rules, approval boundaries, and scope. Check that local document links resolve and instructions match the actual repository state.
-- When changing agent entry points, check a fresh session in Claude Code and another coding agent. Ask each to identify scope, privacy rules, approval boundaries, and available checks from repository files alone; report agent versions, results, and limitations in the pull request or handoff. If a second agent isn't available, say that this check was not run.
+```bash
+npm install
+supabase start                # local Postgres, Auth, and Mailpit
+cp .env.example .env.local    # fill in keys from `supabase status`
+npm run dev                   # http://localhost:3000
+```
 
-When application code is added, document reproducible installation, development, migration, seeding, and verification commands, add .env.example with placeholders only, and run the same verification checks in CI. Keep commands current in shared documentation.
+Sign in with any email in `supabase/seed.sql`. Sign-in and invite emails land in Mailpit at http://127.0.0.1:54324.
+
+Before a pull request, run and report:
+
+- `supabase db reset` applies every migration and the seed from scratch.
+- `supabase test db` runs the RLS tests. Every table needs a test proving a member can't read or edit what they shouldn't.
+- `npx tsc --noEmit`, `npm run lint`, and `npm run build`.
+- After a schema change, `supabase gen types typescript --local > src/lib/database.types.ts`.
+- For UI changes, click through the flow at phone width.
+- For documentation changes, `git diff --check`, and check that links resolve and instructions match the repository.
+- When changing agent entry points, check a fresh session in Claude Code and another coding agent. Ask each to identify scope, privacy rules, approval boundaries, and available checks from repository files alone; report agent versions, results, and limitations. If a second agent isn't available, say that this check was not run.
+
+CI should run the same checks once it exists.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
