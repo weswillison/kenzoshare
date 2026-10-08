@@ -2,6 +2,16 @@ begin;
 create extension if not exists pgtap with schema extensions;
 select plan(28);
 
+-- Start from an empty database so seed data doesn't change the counts.
+-- Everything here is rolled back at the end.
+alter table public.activity_events disable trigger activity_events_append_only;
+alter table public.activity_events disable trigger activity_events_no_truncate;
+truncate public.activity_events, public.issues, public.household_join_requests,
+  public.invites, public.profiles, public.households cascade;
+delete from auth.users;
+alter table public.activity_events enable trigger activity_events_append_only;
+alter table public.activity_events enable trigger activity_events_no_truncate;
+
 -- People: Ana and Ben share a house, Cam lives elsewhere, Dee is a steward,
 -- Eli has left, Fay is new and has no household yet.
 insert into auth.users (id, email, email_confirmed_at, aud, role) values

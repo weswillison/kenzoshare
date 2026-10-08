@@ -285,6 +285,8 @@ create policy households_read on public.households for select
 create policy households_edit on public.households for update
   using (id = public.my_household_id());
 grant select, update (name, address, notes) on public.households to authenticated;
+-- The daily keep-awake ping reads one row.
+grant select on public.households to service_role;
 
 -- profiles: active members see the directory; you always see yourself.
 create policy profiles_read on public.profiles for select
@@ -340,8 +342,6 @@ returns table (module text, event_type text, n bigint)
 language sql stable security definer set search_path = '' as $$
   select e.module, e.event_type, count(*) from public.activity_events e
    where e.actor_id = auth.uid() group by e.module, e.event_type
-  union all
-  select 'core', 'issues_reported', count(*) from public.issues where reporter_id = auth.uid()
   union all
   select 'core', 'issues_about_me', count(*) from public.issues where about_profile_id = auth.uid();
 $$;
