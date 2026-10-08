@@ -33,7 +33,7 @@
   --color-link: var(--link);
   --color-on-link: var(--on-link);
   --color-danger: var(--danger);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 html {
