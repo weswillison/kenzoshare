@@ -12,6 +12,7 @@ Status: v0 (logins, people, households, invites, problems) is live for testing. 
 - [docs/comps.md](docs/comps.md): existing tools to learn from
 - [docs/versions/](docs/versions/): one spec per version
 - [docs/prompts/kickoff.md](docs/prompts/kickoff.md): prompt to start v0 with any coding agent
+- [docs/prompts/review-v1.md](docs/prompts/review-v1.md): prompt to walk a reviewer through v0 and v1
 
 ## Contributing with any agent
 
