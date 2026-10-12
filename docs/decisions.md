@@ -25,8 +25,15 @@
 - Usage is tracked through the activity log, per person and for the group. Per-person counts are never shown as a score, never shown in lists, and people are never ranked or sorted by activity. Profiles show plain facts from a person's history. A group usage view (totals, no names) comes later, around the check-in.
 - v0 is tested by Wes and Preston only. Neighbors see the site once v1 (Garage Share) is done.
 - First stewards: Wes and Preston.
+- Garage Share items belong to a household. Anyone in the household can manage them.
+- Borrowing is a request. The owner's household confirms when the item changes hands. If an item is out, a request joins a waitlist, first come first served.
+- A borrower can hand an item straight to the next person on the waitlist. The owner's household sees it.
+- Only the owner's household sees an item's full borrow history. Borrowers see their own loans. Everyone sees who has an item right now.
+- Two emails only: the owner's household gets one when someone requests an item, and the next person on the waitlist gets one when the item comes back. No other notifications.
+- Photos of an item when it's handed over or returned are optional.
+- Item condition is free text.
+- Profiles show plain facts: what a household lends, how many times someone has borrowed. Rates (on-time returns, problems) are never shown publicly. The data stays in the activity log for stewards.
 
-## Open
 - How to stay open while staying safe once the group outgrows the pilot cap.
 - Long term: free software with paid setup/consulting for other neighborhoods? First, make something people want.
 - Streaming logins: worth trying at all?
