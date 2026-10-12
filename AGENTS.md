@@ -4,7 +4,7 @@
 kenzoshare.org is a sharing site for a small group of neighbors in Kensington, Philadelphia, piloting on one block. It covers things hard to do or own alone: Garage Share (tools and gear), Grocery Share (shared grocery runs), and later a car, shared meals, and childcare. The plan is in [docs/plan.md](docs/plan.md). Decisions and open questions are in [docs/decisions.md](docs/decisions.md).
 
 ## Current state and starting work
-v0 Core is built and runs locally: Next.js app in `src/`, schema and RLS in `supabase/migrations/`, RLS tests in `supabase/tests/`, fake seed data in `supabase/seed.sql`. It is not deployed yet, and there is no CI yet. Update this section and Verification when that changes.
+v0 Core is live at https://kenzoshare.vercel.app (Wes and Preston only). v1 Garage Share is in `src/modules/garage/` and `supabase/migrations/`, switched on in `src/modules.config.ts`. Schema and RLS are in `supabase/migrations/`, RLS tests in `supabase/tests/`, fake seed data in `supabase/seed.sql`. There is no CI yet. Update this section and Verification when that changes.
 
 - Read this file, [docs/plan.md](docs/plan.md), [docs/decisions.md](docs/decisions.md), and the relevant version spec before making changes.
 - Work only on the requested issue or version. Documentation work does not authorize scaffolding or feature implementation.
