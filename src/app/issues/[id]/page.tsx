@@ -20,12 +20,16 @@ export default async function IssuePage({ params }: PageProps<"/issues/[id]">) {
     .eq("id", id)
     .maybeSingle();
   if (!i) notFound();
+  const { data: item } = i.subject_type === "garage_item" && i.subject_id
+    ? await supabase.from("garage_items").select("id, name").eq("id", i.subject_id).maybeSingle()
+    : { data: null };
 
   return (
     <Page title={t.issues.kinds[i.kind]} info={t.issues.info}>
       <p className="text-sm">
         <Muted>{i.status === "open" ? t.issues.open : t.issues.resolved} · {formatDate(i.created_at)}</Muted>
       </p>
+      {item && <p className="pt-3"><TextLink href={`/garage/${item.id}`}>{item.name}</TextLink></p>}
       <p className="py-4 whitespace-pre-wrap">{i.description}</p>
       <dl className="text-sm">
         <div className="flex gap-2 py-1">

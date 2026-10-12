@@ -157,7 +157,12 @@ export async function reportIssue(_: FormState, form: FormData): Promise<FormSta
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("issues")
-    .insert({ kind, description, about_profile_id: text(form, "about") || null })
+    .insert({
+      kind,
+      description,
+      about_profile_id: text(form, "about") || null,
+      ...(text(form, "item") && { module: "garage", subject_type: "garage_item", subject_id: text(form, "item") }),
+    })
     .select("id")
     .single();
   if (error) return { error: t.errors.generic };
