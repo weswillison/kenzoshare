@@ -45,7 +45,7 @@ Open http://localhost:3000 and sign in with any email from `supabase/seed.sql`, 
 Not done yet. The plan: a free Supabase project and a free Vercel project.
 
 1. Supabase: create the project, run `supabase link` and `supabase db push`, turn off public signups, paste `supabase/templates/*.html` into the email templates, set custom SMTP (Supabase's built-in email only reaches your own team), and set the site URL to https://kenzoshare.org.
-2. Vercel: import the repo and set the variables from `.env.example`. `vercel.json` schedules a daily ping so the free database doesn't pause.
+2. Vercel: import the repo and set the variables from `.env.example`. Copy the Supabase secret key from the dashboard (Project Settings → API Keys); the CLI's `projects api-keys` output didn't work as a secret key. `vercel.json` schedules a daily ping so the free database doesn't pause.
 3. Make the first stewards by setting `role = 'steward'` on their profiles in the Supabase dashboard.
 
 ## Privacy rule
