@@ -594,6 +594,14 @@ export type Database = {
         Returns: string
       }
       garage_item_household: { Args: { p_item: string }; Returns: string }
+      garage_next_in_line: {
+        Args: { p_item: string }
+        Returns: {
+          display_name: string
+          request_id: string
+          requester_id: string
+        }[]
+      }
       garage_queue: {
         Args: { p_item: string }
         Returns: {

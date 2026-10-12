@@ -314,6 +314,21 @@ $$;
 revoke execute on function public.garage_queue from public, anon;
 grant execute on function public.garage_queue to authenticated;
 
+-- The next person waiting, for whoever can hand the item to them: the
+-- current borrower or the owning household.
+create function public.garage_next_in_line(p_item uuid)
+returns table (request_id uuid, requester_id uuid, display_name text)
+language sql stable security definer set search_path = '' as $$
+  select r.id, r.requester_id, p.display_name
+    from public.garage_requests r join public.profiles p on p.id = r.requester_id
+   where r.item_id = p_item and r.status = 'pending'
+     and (public.is_my_item(p_item) or exists (
+       select 1 from public.garage_loans l where l.item_id = p_item and l.ended_at is null and l.borrower_id = auth.uid()))
+   order by r.created_at limit 1;
+$$;
+revoke execute on function public.garage_next_in_line from public, anon;
+grant execute on function public.garage_next_in_line to authenticated;
+
 -- Plain facts for a profile. Never rates or rankings.
 create function public.profile_facts(p_profile uuid)
 returns table (things_lent int, times_borrowed int)

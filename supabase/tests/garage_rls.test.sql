@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(30);
+select plan(32);
 
 alter table public.activity_events disable trigger activity_events_append_only;
 alter table public.activity_events disable trigger activity_events_no_truncate;
@@ -92,12 +92,16 @@ select is(public.can_upload_garage_photo('loan/' || (select v from t where k = '
   'the borrower can add a photo to their loan');
 select throws_ok($$ select public.garage_return((select v from t where k = 'cam_req')) $$, 'P0001', null,
   'returning needs a real open loan');
+select is((select display_name from public.garage_next_in_line('20000000-0000-0000-0000-000000000001')), '',
+  'the borrower can see who is next in line');
 select lives_ok($$ select public.garage_hand_off((select v from t where k = 'cam_loan'), (select v from t where k = 'fay_req')) $$,
   'the borrower can hand off to the next person in line');
 select is((select count(*)::int from public.garage_loans), 2, 'borrowers see their own past loans and current ones');
 
 -- ---------------------------------------------------------------- Dee again
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
+select is((select count(*)::int from public.garage_next_in_line('20000000-0000-0000-0000-000000000001')), 0,
+  'people not involved cannot see who is in line');
 select is((select count(*)::int from public.garage_loans), 1, 'others see only the open loan, not history');
 
 -- ---------------------------------------------------------------- Fay returns it
