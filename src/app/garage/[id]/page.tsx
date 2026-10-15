@@ -201,8 +201,9 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
 
       <div className="flex flex-wrap gap-x-4 pt-8 text-sm">
         <TextLink href={`/issues/new?item=${id}${open && !iHaveIt ? `&about=${open.borrower_id}` : ""}`}>{t.garage.report}</TextLink>
-        {mine && (
-          <form action={retireItem.bind(null, id)}><button className="text-muted">{t.garage.retire}</button></form>
+        {mine && (open
+          ? <Muted>{t.garage.retireWhenBack}</Muted>
+          : <form action={retireItem.bind(null, id)}><button className="text-muted">{t.garage.retire}</button></form>
         )}
       </div>
     </Page>

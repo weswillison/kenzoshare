@@ -192,7 +192,11 @@ export async function keepPaused(itemId: string) {
 export async function retireItem(itemId: string) {
   await requireMember();
   const supabase = await createClient();
-  await supabase.from("garage_items").update({ status: "retired" }).eq("id", itemId);
+  const { error } = await supabase.from("garage_items").update({ status: "retired" }).eq("id", itemId);
+  if (error) {
+    console.error("retireItem", error.code, error.message);
+    return;
+  }
   refresh(itemId);
   redirect("/garage/mine");
 }

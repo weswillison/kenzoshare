@@ -189,6 +189,7 @@ export const t = {
     lendAgainPrompt: (name: string) => `Lend ${name} again?`,
     keepPaused: "Not yet",
     retire: "Stop listing this",
+    retireWhenBack: "You can stop listing this once it's back.",
     report: "Report a problem",
     weLend: "We lend",
     iHave: "I have",

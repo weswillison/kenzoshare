@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(32);
+select plan(33);
 
 alter table public.activity_events disable trigger activity_events_append_only;
 alter table public.activity_events disable trigger activity_events_no_truncate;
@@ -79,6 +79,8 @@ select lives_ok($$ insert into t select 'cam_loan', public.garage_hand_over((sel
   'anyone in the owning household can confirm a hand-over');
 select throws_ok($$ select public.garage_hand_over((select v from t where k = 'fay_req')) $$, '23505', null,
   'an item that is out cannot be handed to a second person');
+select throws_ok($$ update public.garage_items set status = 'retired' where id = '20000000-0000-0000-0000-000000000001' $$,
+  'P0001', 'item is out right now', 'an item that is out cannot stop being listed');
 
 -- ---------------------------------------------------------------- Dee sees who has it
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
