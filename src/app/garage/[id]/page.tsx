@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { ActionForm, Submit } from "@/components/action-form";
-import { Field, Input, Muted, Page, Row, Section, Select, TextLink } from "@/components/ui";
+import { Field, Input, Muted, Page, Row, Section, TextLink } from "@/components/ui";
 import { requireMember } from "@/modules/core/me";
 import {
   closeRequest, confirmReturn, handOff, handOver, lendAgain, pauseItem, requestItem, retireItem, returnItem,
 } from "@/modules/garage/actions";
 import { PhotoInput } from "@/modules/garage/photo-input";
+import { PauseFields } from "@/modules/garage/pause-fields";
 import { signPhotos, thumbPath } from "@/modules/garage/photos";
 import { createClient } from "@/lib/supabase/server";
 import { formatCents, formatDate } from "@/lib/format";
@@ -171,17 +172,7 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
           ) : (
             <Expand label={t.garage.pause}>
               <ActionForm action={pauseItem.bind(null, id)}>
-                <Field label={t.garage.pauseFor}>
-                  <Select name="for" defaultValue="open">
-                    <option value="open">{t.garage.pauseOpen}</option>
-                    <option value="week">{t.garage.pauseWeek}</option>
-                    <option value="month">{t.garage.pauseMonth}</option>
-                    <option value="date">{t.garage.pauseUntil}</option>
-                  </Select>
-                </Field>
-                <Field label={t.garage.pauseUntil}>
-                  <Input name="until" type="date" />
-                </Field>
+                <PauseFields />
                 <Submit>{t.garage.pause}</Submit>
               </ActionForm>
             </Expand>
