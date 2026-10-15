@@ -114,7 +114,8 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
       </div>
 
       {/* Asking */}
-      {!mine && !iHaveIt && item.status === "available" && (
+      {/* A pause leaves the line in place, so a waiting neighbor can still leave it. */}
+      {!mine && !iHaveIt && (
         myRequest ? (
           <div className="pt-4">
             <p>{t.garage.asked(queue?.my_position ?? 1)}</p>
@@ -122,7 +123,7 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
               <Submit quiet>{t.garage.cancelAsk}</Submit>
             </form>
           </div>
-        ) : (
+        ) : item.status === "available" && (
           <ActionForm action={requestItem.bind(null, id)}>
             <Field label={t.garage.backByLabel}>
               <Input name="due_on" type="date" />

@@ -122,16 +122,13 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select throws_ok($$ select public.garage_hand_off((select id from public.garage_loans where ended_at is null), (select v from t where k = 'dee_req')) $$,
   'P0001', 'item is not lending right now', 'a paused item cannot be handed off');
 
-select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
-update public.garage_items set status = 'available' where id = '20000000-0000-0000-0000-000000000001';
+-- ---------------------------------------------------------------- Fay returns it, still paused
+select is(public.garage_return((select id from public.garage_loans where ended_at is null)), null,
+  'returning a paused item tells nobody they are next');
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
-select lives_ok($$ select public.garage_close_request((select v from t where k = 'dee_req')) $$, 'Dee leaves the line');
-
--- ---------------------------------------------------------------- Fay returns it
-select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000f","role":"authenticated"}', true);
-select is(public.garage_return((select id from public.garage_loans where ended_at is null)), null,
-  'returning reports nobody waiting when the line is empty');
+select lives_ok($$ select public.garage_close_request((select v from t where k = 'dee_req')) $$,
+  'someone waiting can leave the line while the item is paused');
 
 -- ---------------------------------------------------------------- Ana confirms and pauses
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
