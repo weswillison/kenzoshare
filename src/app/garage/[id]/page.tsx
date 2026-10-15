@@ -51,7 +51,9 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
   const { data: next } = iHaveIt
     ? await supabase.rpc("garage_next_in_line", { p_item: id }).maybeSingle()
     : { data: null };
-  const unconfirmed = mine ? (loans ?? []).filter((l) => l.ended_at && !l.confirmed_at) : [];
+  // A loan that ended in a hand-off didn't come back, so it isn't confirmed.
+  const handedOff = new Set(loans?.map((l) => l.previous_loan_id));
+  const unconfirmed = mine ? (loans ?? []).filter((l) => l.ended_at && !l.confirmed_at && !handedOff.has(l.id)) : [];
   const history = mine ? (loans ?? []).filter((l) => l.ended_at) : [];
 
   const photos = await signPhotos([

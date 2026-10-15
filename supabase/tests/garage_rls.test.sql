@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(33);
+select plan(34);
 
 alter table public.activity_events disable trigger activity_events_append_only;
 alter table public.activity_events disable trigger activity_events_no_truncate;
@@ -114,6 +114,8 @@ select is(public.garage_return((select id from public.garage_loans where ended_a
 -- ---------------------------------------------------------------- Ana confirms and pauses
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
 select is((select count(*)::int from public.garage_loans), 2, 'the owning household sees the full history');
+select throws_ok($$ select public.garage_confirm_return((select v from t where k = 'cam_loan')) $$, 'P0001', 'nothing to confirm',
+  'a loan that was handed off has no return to confirm');
 select lives_ok($$ select public.garage_confirm_return((select id from public.garage_loans where borrower_id = '00000000-0000-0000-0000-00000000000f')) $$,
   'the owner can confirm a return');
 select lives_ok($$ update public.garage_items set status = 'paused' where id = '20000000-0000-0000-0000-000000000001' $$,
