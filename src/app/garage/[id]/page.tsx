@@ -102,7 +102,7 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
             </ActionForm>
           </Expand>
         )}
-        {iHaveIt && next && (
+        {iHaveIt && next && item.status === "available" && (
           <Expand label={t.garage.handOffTo(next.display_name)}>
             <p className="pt-2 text-sm text-muted">{t.garage.handOffInfo}</p>
             <ActionForm action={handOff.bind(null, id, open!.id, next.request_id)}>

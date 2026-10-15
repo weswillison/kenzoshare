@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(34);
+select plan(38);
 
 alter table public.activity_events disable trigger activity_events_append_only;
 alter table public.activity_events disable trigger activity_events_no_truncate;
@@ -87,6 +87,12 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select is((select borrower_id from public.garage_loans), '00000000-0000-0000-0000-00000000000c'::uuid,
   'everyone sees who has an item right now');
 select lives_ok($$ insert into public.garage_categories (name) values ('Kitchen') $$, 'stewards can add categories');
+select lives_ok($$ insert into t select 'dee_req', public.garage_request('20000000-0000-0000-0000-000000000001') $$,
+  'Dee joins the line behind Fay');
+-- Everything in this test shares one now(); put Dee's request clearly later.
+reset role;
+update public.garage_requests set created_at = now() + interval '1 minute' where id = (select v from t where k = 'dee_req');
+set local role authenticated;
 
 -- ---------------------------------------------------------------- Cam hands off to Fay
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
@@ -96,6 +102,8 @@ select throws_ok($$ select public.garage_return((select v from t where k = 'cam_
   'returning needs a real open loan');
 select is((select display_name from public.garage_next_in_line('20000000-0000-0000-0000-000000000001')), '',
   'the borrower can see who is next in line');
+select throws_ok($$ select public.garage_hand_off((select v from t where k = 'cam_loan'), (select v from t where k = 'dee_req')) $$,
+  'P0001', 'that person isn''t next in line', 'a hand-off cannot skip ahead in line');
 select lives_ok($$ select public.garage_hand_off((select v from t where k = 'cam_loan'), (select v from t where k = 'fay_req')) $$,
   'the borrower can hand off to the next person in line');
 select is((select count(*)::int from public.garage_loans), 2, 'borrowers see their own past loans and current ones');
@@ -105,6 +113,20 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select is((select count(*)::int from public.garage_next_in_line('20000000-0000-0000-0000-000000000001')), 0,
   'people not involved cannot see who is in line');
 select is((select count(*)::int from public.garage_loans), 1, 'others see only the open loan, not history');
+
+-- ---------------------------------------------------------------- Ana pauses while Fay has it
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+update public.garage_items set status = 'paused' where id = '20000000-0000-0000-0000-000000000001';
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000f","role":"authenticated"}', true);
+select throws_ok($$ select public.garage_hand_off((select id from public.garage_loans where ended_at is null), (select v from t where k = 'dee_req')) $$,
+  'P0001', 'item is not lending right now', 'a paused item cannot be handed off');
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+update public.garage_items set status = 'available' where id = '20000000-0000-0000-0000-000000000001';
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
+select lives_ok($$ select public.garage_close_request((select v from t where k = 'dee_req')) $$, 'Dee leaves the line');
 
 -- ---------------------------------------------------------------- Fay returns it
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000f","role":"authenticated"}', true);
