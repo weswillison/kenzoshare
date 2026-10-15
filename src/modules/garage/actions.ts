@@ -5,13 +5,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/email";
 import { endOfDay } from "@/lib/format";
+import { siteUrl, text } from "@/lib/form";
 import { requireMember } from "@/modules/core/me";
 import type { FormState } from "@/modules/core/actions";
 import { t } from "@/strings/en";
 
-const text = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
-const siteUrl = () =>
-  process.env.NEXT_PUBLIC_SITE_URL ?? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
 const itemUrl = (id: string) => `${siteUrl()}/garage/${id}`;
 
 function refresh(itemId: string) {

@@ -4,15 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { siteUrl, text } from "@/lib/form";
 import { getMe, requireMember } from "./me";
 import { t } from "@/strings/en";
 
 export type FormState = { error?: string; ok?: string } | undefined;
-
-// On Vercel, the production address comes for free; locally it's set in .env.local.
-const siteUrl = () =>
-  process.env.NEXT_PUBLIC_SITE_URL ?? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-const text = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 
 export async function sendLoginLink(_: FormState, form: FormData): Promise<FormState> {
   const email = text(form, "email").toLowerCase();
