@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/email";
+import { endOfDay } from "@/lib/format";
 import { requireMember } from "@/modules/core/me";
 import type { FormState } from "@/modules/core/actions";
 import { t } from "@/strings/en";
@@ -161,7 +162,7 @@ export async function pauseItem(itemId: string, _: FormState, form: FormData): P
   } else if (choice === "date") {
     const date = text(form, "until");
     if (!date) return { error: t.errors.required };
-    until = new Date(`${date}T23:59:59-05:00`).toISOString();
+    until = endOfDay(date);
   }
 
   const supabase = await createClient();
