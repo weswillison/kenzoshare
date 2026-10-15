@@ -6,8 +6,7 @@ import { t } from "@/strings/en";
 
 // Shrinks a phone photo in the browser and uploads it plus a small
 // thumbnail. The form only carries the stored path.
-async function shrink(file: File, maxSide: number, quality: number): Promise<Blob> {
-  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+function shrink(bitmap: ImageBitmap, maxSide: number, quality: number): Promise<Blob> {
   const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bitmap.width * scale);
@@ -36,7 +35,10 @@ export function PhotoInput({ name, folder, label, defaultPath }: {
     // Holds the form back until the photo's path is known.
     input.current?.setCustomValidity(t.garage.uploading);
     try {
-      const [full, thumb] = await Promise.all([shrink(file, 1600, 0.8), shrink(file, 400, 0.7)]);
+      // Decode once: a full-size phone photo is a lot of memory on an old phone.
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      const [full, thumb] = await Promise.all([shrink(bitmap, 1600, 0.8), shrink(bitmap, 400, 0.7)]);
+      bitmap.close();
       const base = `${folder}/${crypto.randomUUID()}`;
       const storage = createClient().storage.from("garage-photos");
       const opts = { contentType: "image/jpeg", upsert: false };
