@@ -11,11 +11,15 @@ export async function sendEmail(to: string[], subject: string, text: string) {
     console.log("[email]", { to, subject, text });
     return;
   }
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to, subject, text }),
-  });
   // A failed email shouldn't undo the borrow itself; log it and move on.
-  if (!res.ok) console.error("sendEmail", res.status, await res.text());
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: FROM, to, subject, text }),
+    });
+    if (!res.ok) console.error("sendEmail", res.status, await res.text());
+  } catch (err) {
+    console.error("sendEmail", err);
+  }
 }
