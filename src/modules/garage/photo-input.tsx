@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { t } from "@/strings/en";
 
@@ -27,11 +27,14 @@ export function PhotoInput({ name, folder, label, defaultPath }: {
   const [path, setPath] = useState(defaultPath ?? "");
   const [preview, setPreview] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "uploading" | "failed">("idle");
+  const input = useRef<HTMLInputElement>(null);
 
   async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setStatus("uploading");
+    // Holds the form back until the photo's path is known.
+    input.current?.setCustomValidity(t.garage.uploading);
     try {
       const [full, thumb] = await Promise.all([shrink(file, 1600, 0.8), shrink(file, 400, 0.7)]);
       const base = `${folder}/${crypto.randomUUID()}`;
@@ -48,13 +51,15 @@ export function PhotoInput({ name, folder, label, defaultPath }: {
     } catch (err) {
       console.error("photo upload", err);
       setStatus("failed");
+    } finally {
+      input.current?.setCustomValidity("");
     }
   }
 
   return (
     <label className="block pt-4">
       <span className="block pb-1 font-medium">{label}</span>
-      <input type="file" accept="image/*" onChange={onChange} className="block w-full text-sm" />
+      <input ref={input} type="file" accept="image/*" onChange={onChange} className="block w-full text-sm" />
       <input type="hidden" name={name} value={path} />
       {preview && <img src={preview} alt="" className="mt-2 size-24 rounded object-cover" />}
       {status === "uploading" && <span className="block pt-1 text-sm text-muted">{t.garage.uploading}</span>}
