@@ -27,13 +27,17 @@
 - First stewards: Wes and Preston.
 - Garage Share items belong to a household. Anyone in the household can manage them.
 - Borrowing is a request. The owner's household confirms when the item changes hands. If an item is out, a request joins a waitlist, first come first served.
-- A borrower can hand an item straight to the next person on the waitlist. The owner's household sees it.
+- A borrower can hand an item straight to the next person on the waitlist. The owner's household sees it. Reaffirmed in the v1 walkthrough: keep hand-offs first come, first served during the pilot; enforce the order in the database as well as the UI.
 - Only the owner's household sees an item's full borrow history. Borrowers see their own loans. Everyone sees who has an item right now.
 - Two emails only: the owner's household gets one when someone requests an item, and the next person on the waitlist gets one when the item comes back. No other notifications.
 - Photos of an item when it's handed over or returned are optional.
 - Item condition is free text.
 - Profiles show plain facts: what a household lends, how many times someone has borrowed. Rates (on-time returns, problems) are never shown publicly. The data stays in the activity log for stewards.
 
+## Open questions
+
+- Proposed in the v1 walkthrough, supported by Preston, pending discussion with Wes: offer an optional "Email me once on this date" checkbox when pausing an item. Send one check-in email to the person who opts in; the item stays paused until the household chooses to lend it again. This would revise the current no-email snooze decision and add a third Garage Share email type. Not implemented.
+- Proposed in the v1 walkthrough, supported by Preston, pending discussion with Wes: omit the repeated "Available" label from Browse rows, showing only "Out" or "Paused" when applicable. Not implemented.
 - How to stay open while staying safe once the group outgrows the pilot cap.
 - Long term: free software with paid setup/consulting for other neighborhoods? First, make something people want.
 - Streaming logins: worth trying at all?
