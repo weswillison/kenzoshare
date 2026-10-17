@@ -95,6 +95,16 @@ test("an invited neighbor asks to join and a household member approves", async (
 
 test("a member reports and resolves a private problem in their record", async ({ page, neighbor }) => {
   await signIn(page, people.linh.email);
+  // Counts persist between runs, so compare against this run's starting point.
+  await page.locator('nav a[href="/me"]').click();
+  const record = page.locator("section").filter({ has: page.getByRole("heading", { name: t.profile.record, exact: true }) });
+  await expect(record).toBeVisible();
+  const count = (label: string) => record.getByText(label, { exact: true }).locator("xpath=following-sibling::span");
+  const countNow = async (label: string) => (await count(label).count()) ? Number(await count(label).textContent()) : 0;
+  const reported = await countNow(t.events.issue_reported);
+  const resolved = await countNow(t.events.issue_resolved);
+
+  await page.locator('nav a[href="/"]').click();
   await page.locator(`a[href="/people/${people.marcus.id}"]`).click();
   await page.locator(`a[href="/issues/new?about=${people.marcus.id}"]`).click();
   await expect(page.locator('[name="about"]')).toHaveValue(people.marcus.id);
@@ -121,7 +131,6 @@ test("a member reports and resolves a private problem in their record", async ({
   await expect(page.getByText(resolution, { exact: true })).toBeVisible();
   await page.locator('nav a[href="/me"]').click();
   await expect(page.locator(`a[href="${issuePath}"]`)).toContainText(t.issues.resolved);
-  const record = page.locator("section").filter({ has: page.getByRole("heading", { name: t.profile.record, exact: true }) });
-  await expect(record).toContainText(t.events.issue_reported);
-  await expect(record).toContainText(t.events.issue_resolved);
+  await expect(count(t.events.issue_reported)).toHaveText(String(reported + 1));
+  await expect(count(t.events.issue_resolved)).toHaveText(String(resolved + 1));
 });
