@@ -27,15 +27,16 @@ Follow the shared contribution and verification conventions in AGENTS.md, includ
 
 See the Verification section of [AGENTS.md](AGENTS.md) for the current checks.
 
-Run all tests, or either suite on its own:
+Run all tests, or a single suite:
 
 ```bash
-npm run test         # database tests, then browser tests; stops on failure
+npm run test         # unit, database, then browser tests; stops on failure
+npm run test:unit    # container-runtime selection regression tests
 npm run test:db      # SQL/RLS tests against the running local Supabase stack
 npm run test:e2e     # browser flows against local Supabase and Mailpit
 ```
 
-`test:db` loads `.env.local` and runs this checkout's SQL/RLS tests through the Supabase CLI, which must be on your `PATH`. On Linux without a Docker socket (`/var/run/docker.sock`), it detects the rootless Podman socket automatically; an explicit `DOCKER_HOST` in your shell or `.env.local` takes precedence. Otherwise Supabase uses its normal Docker default. Start the stack and apply migrations and seed data before testing; the npm commands do not reset the database. Browser setup is described below.
+`test:db` loads `.env.local` and runs this checkout's SQL/RLS tests through the Supabase CLI, which must be on your `PATH`. On Linux it prefers Docker when its API responds, otherwise it detects a responding rootless Podman socket. An explicit `DOCKER_HOST` in your shell or `.env.local` takes precedence. If neither API responds, Supabase reports its normal connection error. Start the stack and apply migrations and seed data before testing; the npm commands do not reset the database. Browser setup is described below.
 
 For a separate stack, put `SUPABASE_WORKDIR=/path/to/stack` alongside that stack's browser URLs and keys in `.env.local`. Both `npm run test` and `npm run test:db` then use that configuration without extra shell exports. You can also forward CLI flags: `npm run test:db -- --workdir /path/to/stack`. The database tests use `SUPABASE_WORKDIR` or the repository's Supabase config; the browser tests use the URLs and keys, so keep them pointed at the same stack.
 
@@ -62,7 +63,7 @@ export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"
 supabase start
 ```
 
-Direct Supabase commands, such as starts and resets, need `DOCKER_HOST` set in their terminal. The npm database-test command detects the rootless Podman socket automatically when no Docker socket exists; if you have both, set `DOCKER_HOST` for it too. These commands use the regular Supabase runtime, which supports the custom email templates used by this app. The experimental native runtime currently rejects those templates. No Docker daemon or experimental Supabase settings are needed. See the [Podman API service documentation](https://docs.podman.io/en/latest/markdown/podman-system-service.1.html).
+Direct Supabase commands, such as starts and resets, need `DOCKER_HOST` set in their terminal. The npm database-test command detects a responding rootless Podman socket automatically when Docker is unavailable, including when its socket exists but is inaccessible. These commands use the regular Supabase runtime, which supports the custom email templates used by this app. The experimental native runtime currently rejects those templates. No Docker daemon or experimental Supabase settings are needed. See the [Podman API service documentation](https://docs.podman.io/en/latest/markdown/podman-system-service.1.html).
 
 ## Browser tests
 

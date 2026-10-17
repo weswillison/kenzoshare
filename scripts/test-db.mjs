@@ -1,17 +1,20 @@
-import { existsSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { selectContainerHost } from "./container-runtime.mjs";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
-// Preserve an explicit runtime choice. Otherwise, on Linux without a Docker
-// socket, use an available rootless Podman socket; the Supabase CLI handles its
-// normal Docker default.
-if (!process.env.DOCKER_HOST && process.platform === "linux" && !existsSync("/var/run/docker.sock")) {
+// Preserve an explicit runtime choice and prefer a responding Docker API.
+// A socket file alone does not prove the current user can use the daemon.
+if (!process.env.DOCKER_HOST && process.platform === "linux") {
   const runtimeDir = process.env.XDG_RUNTIME_DIR || `/run/user/${process.getuid()}`;
-  const socket = join(runtimeDir, "podman", "podman.sock");
-  if (existsSync(socket) && statSync(socket).isSocket()) {
-    process.env.DOCKER_HOST = `unix://${socket}`;
+  const host = await selectContainerHost({
+    dockerSocket: "/var/run/docker.sock",
+    podmanSocket: join(runtimeDir, "podman", "podman.sock"),
+  });
+  if (host) {
+    process.env.DOCKER_HOST = host;
     console.log("Using the rootless Podman socket for database tests.");
   }
 }
