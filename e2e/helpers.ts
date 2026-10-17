@@ -3,9 +3,10 @@ import { test as base, expect, type Page } from "@playwright/test";
 import { baseURL, mailpitURL } from "./settings";
 
 // A second, isolated phone session for the neighbor accepting an invite.
+// Contexts created in a test inherit the project's device and other options.
 export const test = base.extend<{ neighbor: Page }>({
-  neighbor: async ({ browser, baseURL, viewport, isMobile, hasTouch }, provideNeighbor) => {
-    const context = await browser.newContext({ baseURL, viewport, isMobile, hasTouch });
+  neighbor: async ({ browser }, provideNeighbor) => {
+    const context = await browser.newContext();
     await provideNeighbor(await context.newPage());
     await context.close();
   },
