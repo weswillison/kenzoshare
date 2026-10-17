@@ -78,7 +78,7 @@ supabase db reset --local           # deletes local data and restores the fake s
 npm run test:e2e
 ```
 
-Stop any app running on the test port first. Playwright builds and starts its own production server at `NEXT_PUBLIC_SITE_URL` (default http://localhost:3000), then stops it when finished. The build needs network access to download the app's Google font. Supabase and Mailpit stay running. The configuration reads `.env.local` and accepts only local HTTP URLs; use only local keys. On Linux, Playwright may ask you to install browser system dependencies with `npx playwright install-deps chromium`.
+Stop any app running on the test port first. By default, Playwright builds and starts its own production server at `NEXT_PUBLIC_SITE_URL` (default http://localhost:3000), then stops it when finished. The build needs network access to download the app's Google font. Supabase and Mailpit stay running. The configuration reads `.env.local` and accepts only local HTTP URLs; use only local keys. On Linux, Playwright may ask you to install browser system dependencies with `npx playwright install-deps chromium`.
 
 For a separate local stack, use its API URL and keys in `.env.local`, set `NEXT_PUBLIC_SITE_URL` to match that stack's Auth site URL, and set `E2E_MAILPIT_URL` to its mail service URL (default http://127.0.0.1:54324). Each stack needs a unique `project_id` and ports in its Supabase config. Reset only the disposable stack whose config you are using; `supabase --workdir /path/to/stack ...` selects a separate config directory. If Node is managed by mise, `mise exec node@22 -- npm run test:e2e` runs the suite with the required Node version.
 
@@ -90,6 +90,8 @@ npm run test:e2e -- --headed        # watch the phone-sized browser
 npm run test:e2e -- -g "reports"    # run just the problem flow
 npx playwright show-report
 ```
+
+Every run builds the app first. To iterate on a test without rebuilding, start the app yourself with the same local `.env.local` (`npm run build && npm run start`, or `npm run dev`) and run `E2E_REUSE_SERVER=1 npm run test:e2e -- -g "reports"`. Playwright then uses the app already on the test port and skips its setup check, so make sure Supabase and Mailpit are running.
 
 Failures retain traces and screenshots in the ignored `test-results/` directory; the HTML report is in `playwright-report/`. Selectors use form field names and link paths, plus explicit test IDs for household join actions and signing out. UI wording and styling can change without rewriting those selectors.
 

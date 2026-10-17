@@ -19,7 +19,8 @@ export default defineConfig({
   webServer: {
     command: `node e2e/check-setup.mjs && npm run build && npm run start -- --port ${new URL(baseURL).port || "80"}`,
     url: `${baseURL}/login`,
-    reuseExistingServer: false,
+    // Opt in to skip the build while iterating; the default never tests a stray app.
+    reuseExistingServer: process.env.E2E_REUSE_SERVER === "1",
     timeout: 180_000,
     env: {
       NEXT_PUBLIC_SUPABASE_URL: supabaseURL,
