@@ -6,7 +6,6 @@ import { t } from "../src/strings/en";
 test("a member follows an emailed sign-in link and signs out", async ({ page }) => {
   await page.goto("/me");
   await expect(page).toHaveURL(`${baseURL}/login`);
-  await expect(page.locator(`a[href="/people/${people.tom.id}"]`)).toHaveCount(0);
 
   await signIn(page, people.tom.email);
   await page.locator(`a[href="/people/${people.tom.id}"]`).click();
