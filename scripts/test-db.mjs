@@ -4,9 +4,10 @@ import { spawnSync } from "node:child_process";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
-// Preserve an explicit runtime choice. Otherwise use an available rootless
-// Podman socket on Linux; the Supabase CLI handles its normal Docker default.
-if (!process.env.DOCKER_HOST && process.platform === "linux") {
+// Preserve an explicit runtime choice. Otherwise, on Linux without a Docker
+// socket, use an available rootless Podman socket; the Supabase CLI handles its
+// normal Docker default.
+if (!process.env.DOCKER_HOST && process.platform === "linux" && !existsSync("/var/run/docker.sock")) {
   const runtimeDir = process.env.XDG_RUNTIME_DIR || `/run/user/${process.getuid()}`;
   const socket = join(runtimeDir, "podman", "podman.sock");
   if (existsSync(socket) && statSync(socket).isSocket()) {
