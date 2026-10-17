@@ -63,11 +63,11 @@ export async function signIn(page: Page, email: string) {
 export async function invite(member: Page, neighbor: Page) {
   const email = `e2e-${randomUUID()}@example.test`;
   await member.goto("/invite");
-  const before = new Set((await messages(member, email)).map((m) => m.ID));
   await member.locator('[name="email"]').fill(email);
   await submit(member, "email");
   await expect(member.getByRole("status")).toContainText(email);
-  await openEmail(neighbor, email, before, "invite");
+  // The address is new, so any message to it is the invite.
+  await openEmail(neighbor, email, new Set(), "invite");
   await expect(neighbor).toHaveURL(`${baseURL}/welcome`);
   const name = `Test Neighbor ${randomUUID().slice(0, 8)}`;
   await neighbor.locator('[name="display_name"]').fill(name);
