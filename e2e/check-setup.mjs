@@ -1,7 +1,8 @@
-import { mailpitURL, supabaseURL } from "./settings.ts";
-
-// Playwright passes the environment loaded by playwright.config.ts to this process.
-// Check services before spending time on a production build.
+// Playwright passes the environment loaded by playwright.config.ts to this process,
+// including the local URLs that e2e/settings.ts checked. Plain JavaScript keeps
+// this check free of TypeScript loading. Check services before a production build.
+const supabaseURL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const mailpitURL = process.env.E2E_MAILPIT_URL;
 for (const name of ["NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "SUPABASE_SECRET_KEY"]) {
   if (!process.env[name] || process.env[name].endsWith("_xxx")) {
     throw new Error(`Set ${name} in .env.local using local keys from 'supabase status'. See README.md.`);
