@@ -52,7 +52,7 @@ export default async function WelcomePage() {
               <span>
                 {h.name} <Muted>· {h.profiles.map((p) => p.display_name).join(", ")}</Muted>
               </span>
-              <form action={askToJoin.bind(null, h.id)} className="ml-auto">
+              <form action={askToJoin.bind(null, h.id)} data-testid={`join-household-${h.id}`} className="ml-auto">
                 <Submit quiet>{t.welcome.ask}</Submit>
               </form>
             </Row>

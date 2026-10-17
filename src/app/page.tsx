@@ -37,10 +37,10 @@ export default async function Home() {
       {requests && requests.length > 0 && (
         <Section title={t.home.joinRequests}>
           {requests.map((r) => (
-            <Row key={r.id}>
+            <Row key={r.id} testId="household-join-request">
               <span>{r.profiles?.display_name}</span>
               <span className="ml-auto flex gap-2">
-                <form action={decideJoin.bind(null, r.id, true)}><Submit quiet>{t.home.approve}</Submit></form>
+                <form action={decideJoin.bind(null, r.id, true)} data-testid="approve-household-join"><Submit quiet>{t.home.approve}</Submit></form>
                 <form action={decideJoin.bind(null, r.id, false)}><Submit quiet>{t.home.decline}</Submit></form>
               </span>
             </Row>

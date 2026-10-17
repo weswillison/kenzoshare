@@ -9,7 +9,7 @@ export default async function MePage() {
   const me = await requireMember();
   return (
     <Page title={t.profile.title} action={
-      <form action={signOut}><button className="text-link">{t.profile.signOut}</button></form>
+      <form action={signOut}><button data-testid="sign-out" className="text-link">{t.profile.signOut}</button></form>
     }>
       <details>
         <summary className="cursor-pointer py-2 text-link">{t.edit}</summary>
