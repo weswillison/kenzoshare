@@ -91,7 +91,7 @@ npm run test:e2e -- -g "reports"    # run just the problem flow
 npx playwright show-report
 ```
 
-Failures retain traces and screenshots in the ignored `test-results/` directory; the HTML report is in `playwright-report/`. Selectors use form field names and link paths, plus explicit test IDs for household join actions. UI wording and styling can change without rewriting those selectors.
+Failures retain traces and screenshots in the ignored `test-results/` directory; the HTML report is in `playwright-report/`. Selectors use form field names and link paths, plus explicit test IDs for household join actions and signing out. UI wording and styling can change without rewriting those selectors.
 
 Keep detailed permission and data-rule coverage in `supabase/tests/`; these browser tests are a few checks that the main pieces work together. Add focused unit tests when substantial pure logic appears (for example, grocery cost calculations), rather than adding component snapshots or another test framework now. CI is still pending; when added, run the existing verification checks and this suite against a fresh local Supabase stack.
 
