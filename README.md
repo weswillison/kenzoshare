@@ -2,7 +2,7 @@
 
 A sharing site for a small group of neighbors in Kensington, Philadelphia. Pilot on one block. Open source under AGPL-3.0 (see `LICENSE`).
 
-Status: v0 (logins, people, households, invites, problems) is live for testing. v1 Garage Share is in progress.
+Status: v0 (logins, people, households, invites, problems) and v1 Garage Share (items, borrowing, waitlists, hand-offs) are live for testing with the first two households.
 
 ## Docs
 
