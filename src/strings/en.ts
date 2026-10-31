@@ -178,6 +178,8 @@ export const t = {
     confirm: "Confirm it's back",
     history: "History",
     historyInfo: "Only your household sees who has borrowed this.",
+    myLoans: "Your loans",
+    myLoansInfo: "Only you and the owner's household see these.",
     pause: "Pause lending",
     pauseFor: "For how long?",
     pauseOpen: "Until I turn it back on",

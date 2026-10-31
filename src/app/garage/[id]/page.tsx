@@ -54,7 +54,7 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
   // A loan that ended in a hand-off didn't come back, so it isn't confirmed.
   const handedOff = new Set(loans?.map((l) => l.previous_loan_id));
   const unconfirmed = mine ? (loans ?? []).filter((l) => l.ended_at && !l.confirmed_at && !handedOff.has(l.id)) : [];
-  const history = mine ? (loans ?? []).filter((l) => l.ended_at) : [];
+  const history = (loans ?? []).filter((l) => l.ended_at && (mine || l.borrower_id === me.id));
 
   const photos = await signPhotos([
     item.photo_path,
@@ -149,7 +149,7 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
               </div>
               {!open && item.status === "available" && r === requests[0] && (
                 <ActionForm action={handOver.bind(null, id, r.id)}>
-                  <PhotoInput name="photo_path" folder={`item/${id}`} label={t.garage.photoOptional} />
+                  <PhotoInput name="photo_path" folder={`request/${r.id}`} label={t.garage.photoOptional} />
                   <Submit>{t.garage.handOver}</Submit>
                 </ActionForm>
               )}
@@ -183,8 +183,8 @@ export default async function ItemPage({ params }: PageProps<"/garage/[id]">) {
         </div>
       )}
 
-      {mine && history.length > 0 && (
-        <Section title={t.garage.history} info={t.garage.historyInfo}>
+      {history.length > 0 && (
+        <Section title={mine ? t.garage.history : t.garage.myLoans} info={mine ? t.garage.historyInfo : t.garage.myLoansInfo}>
           {history.map((l) => (
             <Row key={l.id}>
               <span>
