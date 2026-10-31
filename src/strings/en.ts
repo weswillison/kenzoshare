@@ -228,8 +228,18 @@ export const t = {
     item_retired: "Stopped listing something",
   } as Record<string, string>,
 
-  stats: {
-    issues_about_me: "Problems about me",
+  // The same events, seen from the other side.
+  counterpartEvents: {
+    joined: "Someone I invited joined",
+    household_joined: "Welcomed someone into my household",
+    issue_reported: "A problem was reported about me",
+    issue_resolved: "A problem I reported was resolved",
+    issue_reopened: "A problem I reported was reopened",
+    item_lent: "Borrowed something",
+    item_returned: "Something I borrowed was marked returned",
+    return_confirmed: "A return of mine was confirmed",
+    item_handed_off: "Was handed something",
+    request_declined: "Heard not now on a request",
   } as Record<string, string>,
 
   errors: {
