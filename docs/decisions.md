@@ -37,10 +37,11 @@
 - Pending invites expire after a set time; the length is chosen when this is built. Re-inviting an address replaces its pending invite, so a neighbor can just send it again when the email didn't arrive. No steward cancel button (decided 2026-10-31).
 - Someone who signs in with no pending invite is not blocked. They have no voucher until a steward vouches for them, which records the steward as their inviter (decided 2026-10-31).
 - The GitHub repository is public (made public 2026-10-31).
+- Hand-over and return photos are evidence between the people on a loan: visible to the borrower, the owning household, and stewards. Listing photos are visible to every member (decided 2026-10-31).
+- Leaving cancels a person's pending requests, so nobody is asked to hand an item to a former member. A former member can't attach a photo when returning or handing off, and sees a problem they're part of without the name of who it's about (decided 2026-10-31).
 
 ## Open questions
 
-- Proposed while closing the v1 review (2026-10-31), for Wes to confirm: stewards can see hand-over and return photos, alongside the borrower and the owning household. Leaving cancels a person's pending requests, so nobody is asked to hand an item to a former member. A former member can't attach a photo when returning or handing off. A former member sees a problem they're part of, but not the name of who it's about (they can't read other profiles).
 - How to stay open while staying safe once the group outgrows the pilot cap.
 - Long term: free software with paid setup/consulting for other neighborhoods? First, make something people want.
 - Streaming logins: worth trying at all?
