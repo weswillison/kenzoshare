@@ -61,6 +61,7 @@ Future modules add their own tables and write to the same activity_events and is
 - Small commits. Tag releases (v0.1.0, v1.0.0).
 - Ask before adding a dependency.
 - When unsure about a product decision, check docs/decisions.md, then ask.
+- UI is sketched in Figma; [docs/design.md](docs/design.md) has the file link, the token layers, and the one-way sync back to `globals.css`.
 
 ## Shared contribution workflow
 - Keep changes focused and commits small. Use commit subjects in the form `type: short imperative description`, with `docs`, `feat`, `fix`, `chore`, or `test` as the type. Example: `docs: share project instructions across agents`.
