@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(38);
+select plan(63);
 
 alter table public.activity_events disable trigger activity_events_append_only;
 alter table public.activity_events disable trigger activity_events_no_truncate;
@@ -11,21 +11,26 @@ alter table public.activity_events enable trigger activity_events_append_only;
 alter table public.activity_events enable trigger activity_events_no_truncate;
 
 -- Ana and Ben live at Blue door and own the drill. Cam lives at Corner
--- house. Dee is a steward elsewhere. Fay has no household yet.
+-- house. Dee is a steward elsewhere. Eli and Fay have no household yet.
+-- Gus lives at Yellow steps and never borrows the drill.
 insert into auth.users (id, email, email_confirmed_at, aud, role) values
   ('00000000-0000-0000-0000-00000000000a', 'ana@example.test', now(), 'authenticated', 'authenticated'),
   ('00000000-0000-0000-0000-00000000000b', 'ben@example.test', now(), 'authenticated', 'authenticated'),
   ('00000000-0000-0000-0000-00000000000c', 'cam@example.test', now(), 'authenticated', 'authenticated'),
   ('00000000-0000-0000-0000-00000000000d', 'dee@example.test', now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-00000000000f', 'fay@example.test', now(), 'authenticated', 'authenticated');
+  ('00000000-0000-0000-0000-00000000000e', 'eli@example.test', now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-00000000000f', 'fay@example.test', now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000010', 'gus@example.test', now(), 'authenticated', 'authenticated');
 insert into public.households (id, name) values
   ('10000000-0000-0000-0000-000000000001', 'Blue door'),
   ('10000000-0000-0000-0000-000000000002', 'Corner house'),
-  ('10000000-0000-0000-0000-000000000003', 'Green awning');
+  ('10000000-0000-0000-0000-000000000003', 'Green awning'),
+  ('10000000-0000-0000-0000-000000000004', 'Yellow steps');
 update public.profiles set household_id = '10000000-0000-0000-0000-000000000001'
  where id in ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-00000000000b');
 update public.profiles set household_id = '10000000-0000-0000-0000-000000000002' where id = '00000000-0000-0000-0000-00000000000c';
 update public.profiles set household_id = '10000000-0000-0000-0000-000000000003', role = 'steward' where id = '00000000-0000-0000-0000-00000000000d';
+update public.profiles set household_id = '10000000-0000-0000-0000-000000000004' where id = '00000000-0000-0000-0000-000000000010';
 
 create temporary table t (k text primary key, v uuid);
 grant all on t to authenticated;
@@ -75,12 +80,55 @@ select is((select my_position from public.garage_queue('20000000-0000-0000-0000-
 -- ---------------------------------------------------------------- Ben hands it to Cam
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
 select is((select count(*)::int from public.garage_requests), 2, 'the owning household sees every request');
+select lives_ok($$ insert into storage.objects (bucket_id, name) values ('garage-photos', 'request/' || (select v from t where k = 'cam_req') || '/h.jpg') $$,
+  'the owner can upload the hand-over photo');
 select lives_ok($$ insert into t select 'cam_loan', public.garage_hand_over((select v from t where k = 'cam_req')) $$,
   'anyone in the owning household can confirm a hand-over');
 select throws_ok($$ select public.garage_hand_over((select v from t where k = 'fay_req')) $$, '23505', null,
   'an item that is out cannot be handed to a second person');
 select throws_ok($$ update public.garage_items set status = 'retired' where id = '20000000-0000-0000-0000-000000000001' $$,
   'P0001', 'item is out right now', 'an item that is out cannot stop being listed');
+select is((select n from public.my_stats() where event_type = 'item_lent' and not as_counterpart), 1::bigint,
+  'your record counts what you did');
+
+-- ---------------------------------------------------------------- Cam's record
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
+select is((select n from public.my_stats() where event_type = 'item_lent' and as_counterpart), 1::bigint,
+  'your record counts what others did with you');
+select throws_ok($$ insert into storage.objects (bucket_id, name) values ('garage-photos', 'request/' || (select v from t where k = 'cam_req') || '/x.jpg') $$,
+  '42501', null, 'the requester cannot upload the hand-over photo');
+select lives_ok($$ insert into storage.objects (bucket_id, name) values ('garage-photos', 'loan/' || (select v from t where k = 'cam_loan') || '/r.jpg') $$,
+  'the borrower can upload a photo to their loan');
+
+-- ---------------------------------------------------------------- Who sees which photos
+-- Listing photos are for everyone. Hand-over and return photos are evidence
+-- between the people on the loan.
+reset role;
+insert into storage.objects (bucket_id, name) values
+  ('garage-photos', 'item/20000000-0000-0000-0000-000000000001/a.jpg'),
+  ('garage-photos', 'loan/' || (select v from t where k = 'cam_loan') || '/r-thumb.jpg'),
+  ('garage-photos', 'loan/' || (select v from t where k = 'cam_loan') || '/other.jpg');
+-- Scoped to this test's objects: local Storage may hold photos from the app.
+create temporary view evidence with (security_invoker = true) as
+  select name from storage.objects
+   where name like 'request/' || (select v from t where k = 'cam_req') || '/%'
+      or name like 'loan/' || (select v from t where k = 'cam_loan') || '/%';
+grant select on evidence to authenticated;
+set local role authenticated;
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-000000000010","role":"authenticated"}', true);
+select is((select count(*)::int from storage.objects where name like 'item/20000000-0000-0000-0000-000000000001/%'), 1,
+  'every member sees listing photos');
+select is((select count(*)::int from evidence), 0, 'an unrelated member sees no hand-over or return photos');
+select throws_ok($$ insert into storage.objects (bucket_id, name) values ('garage-photos', 'loan/' || (select v from t where k = 'cam_loan') || '/g.jpg') $$,
+  '42501', null, 'an unrelated member cannot add a photo to a loan');
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
+select is((select count(*)::int from evidence), 4, 'the borrower sees the photos of their loan');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+select is((select count(*)::int from evidence), 4, 'the owning household sees the photos of its loans');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
+select is((select count(*)::int from evidence), 4, 'stewards see evidence photos');
 
 -- ---------------------------------------------------------------- Dee sees who has it
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
@@ -104,9 +152,14 @@ select is((select display_name from public.garage_next_in_line('20000000-0000-00
   'the borrower can see who is next in line');
 select throws_ok($$ select public.garage_hand_off((select v from t where k = 'cam_loan'), (select v from t where k = 'dee_req')) $$,
   'P0001', 'that person isn''t next in line', 'a hand-off cannot skip ahead in line');
-select lives_ok($$ select public.garage_hand_off((select v from t where k = 'cam_loan'), (select v from t where k = 'fay_req')) $$,
+select lives_ok($$ select public.garage_hand_off((select v from t where k = 'cam_loan'), (select v from t where k = 'fay_req'),
+  'loan/' || (select v from t where k = 'cam_loan') || '/r.jpg') $$,
   'the borrower can hand off to the next person in line');
 select is((select count(*)::int from public.garage_loans), 2, 'borrowers see their own past loans and current ones');
+
+-- ---------------------------------------------------------------- Fay has it
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000f","role":"authenticated"}', true);
+select is((select count(*)::int from evidence), 2, 'the person handed an item sees the hand-off photo, not the rest of that loan');
 
 -- ---------------------------------------------------------------- Dee again
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}', true);
@@ -143,6 +196,68 @@ select lives_ok($$ update public.garage_items set status = 'paused' where id = '
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000c","role":"authenticated"}', true);
 select throws_ok($$ select public.garage_request('20000000-0000-0000-0000-000000000001') $$, 'P0001', 'item is not lending right now',
   'paused items cannot be requested');
+
+-- ---------------------------------------------------------------- The ladder, and people who leave
+-- Gus borrows the ladder with Fay and Eli in line, then Gus and Eli leave.
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+insert into public.garage_items (id, household_id, category_id, name, replacement_cost_cents)
+values ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001',
+        (select id from public.garage_categories where name = 'Tools'), 'Ladder', 20000);
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-000000000010","role":"authenticated"}', true);
+insert into t select 'gus_req', public.garage_request('20000000-0000-0000-0000-000000000002');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000f","role":"authenticated"}', true);
+insert into t select 'fay_req2', public.garage_request('20000000-0000-0000-0000-000000000002');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000e","role":"authenticated"}', true);
+insert into t select 'eli_req', public.garage_request('20000000-0000-0000-0000-000000000002');
+reset role;
+update public.garage_requests set created_at = now() + interval '1 minute' where id = (select v from t where k = 'fay_req2');
+update public.garage_requests set created_at = now() + interval '2 minutes' where id = (select v from t where k = 'eli_req');
+set local role authenticated;
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', true);
+select lives_ok($$ insert into t select 'gus_loan', public.garage_hand_over((select v from t where k = 'gus_req')) $$,
+  'the owner hands the ladder to Gus');
+select throws_ok($$ select public.garage_close_request((select v from t where k = 'gus_req')) $$, 'P0001', 'request not found',
+  'a request that was just fulfilled cannot be closed');
+
+reset role;
+update public.profiles set status = 'left' where id in ('00000000-0000-0000-0000-00000000000e', '00000000-0000-0000-0000-000000000010');
+select is((select status from public.garage_requests where id = (select v from t where k = 'eli_req')), 'cancelled',
+  'leaving takes you out of every line');
+set local role authenticated;
+
+-- ---------------------------------------------------------------- Gus (left) holds the ladder
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-000000000010","role":"authenticated"}', true);
+select throws_ok($$ select public.garage_request('20000000-0000-0000-0000-000000000002') $$, 'P0001', 'not an active member',
+  'someone who left cannot request');
+select throws_ok($$ insert into storage.objects (bucket_id, name) values ('garage-photos', 'loan/' || (select v from t where k = 'gus_loan') || '/x.jpg') $$,
+  '42501', null, 'someone who left cannot upload photos');
+select is((select count(*)::int from storage.objects where name like 'item/20000000-0000-0000-0000-000000000001/%'), 0,
+  'someone who left sees no listing photos');
+select lives_ok($$ insert into t select 'fay_loan2', public.garage_hand_off((select v from t where k = 'gus_loan'), (select v from t where k = 'fay_req2')) $$,
+  'someone who left can hand off a loan they hold');
+
+-- ---------------------------------------------------------------- Eli (left) and Fay (left)
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000e","role":"authenticated"}', true);
+select throws_ok($$ select public.garage_hand_over((select v from t where k = 'fay_req2')) $$, 'P0001', null,
+  'someone who left cannot hand over');
+select throws_ok($$ select public.garage_return((select v from t where k = 'fay_loan2')) $$, 'P0001', 'not your loan',
+  'someone who left cannot return a loan that is not theirs');
+
+reset role;
+update public.profiles set status = 'left' where id = '00000000-0000-0000-0000-00000000000f';
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000f","role":"authenticated"}', true);
+select is((select count(*)::int from public.garage_loans where borrower_id = auth.uid()), 2,
+  'someone who left still sees their own loans');
+select lives_ok($$ select public.garage_return((select v from t where k = 'fay_loan2')) $$,
+  'someone who left can return a loan they hold');
+select throws_ok($$ select public.garage_confirm_return((select v from t where k = 'fay_loan2')) $$, 'P0001', null,
+  'someone who left cannot confirm a return');
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+select lives_ok($$ select public.garage_confirm_return((select v from t where k = 'fay_loan2')) $$,
+  'the owner confirms the ladder is back');
 
 reset role;
 set local role anon;

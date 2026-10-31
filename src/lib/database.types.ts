@@ -578,6 +578,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_read_garage_photo: { Args: { p_name: string }; Returns: boolean }
       can_upload_garage_photo: { Args: { p_name: string }; Returns: boolean }
       create_household: {
         Args: { p_address?: string; p_name: string }
@@ -636,6 +637,7 @@ export type Database = {
       my_stats: {
         Args: never
         Returns: {
+          as_counterpart: boolean
           event_type: string
           module: string
           n: number
