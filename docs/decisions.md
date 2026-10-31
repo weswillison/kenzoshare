@@ -34,13 +34,12 @@
 - Item condition is free text.
 - Profiles show plain facts: what a household lends, how many times someone has borrowed. Rates (on-time returns, problems) are never shown publicly. The data stays in the activity log for stewards.
 - Browse rows show only "Out" or "Paused". The repeated "Available" label is omitted (decided 2026-10-31).
-- Pending invites expire after a set time; the length is chosen when this is built. No steward cancel button (decided 2026-10-31).
+- Pending invites expire after a set time; the length is chosen when this is built. Re-inviting an address replaces its pending invite, so a neighbor can just send it again when the email didn't arrive. No steward cancel button (decided 2026-10-31).
 - Someone who signs in with no pending invite is not blocked. They have no voucher until a steward vouches for them, which records the steward as their inviter (decided 2026-10-31).
 - The GitHub repository is public (made public 2026-10-31).
 
 ## Open questions
 
-- Should re-inviting an address replace its pending invite, so a neighbor can just send the invite again when the email didn't arrive? Proposed alongside expiry; Wes to decide.
 - How to stay open while staying safe once the group outgrows the pilot cap.
 - Long term: free software with paid setup/consulting for other neighborhoods? First, make something people want.
 - Streaming logins: worth trying at all?
