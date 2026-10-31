@@ -59,7 +59,7 @@ export default async function GaragePage({ searchParams }: PageProps<"/garage">)
 
       {list?.length ? list.map((i) => {
         const thumb = i.photo_path && photos.get(thumbPath(i.photo_path));
-        const state = i.status === "paused" ? t.garage.paused : out.has(i.id) ? t.garage.out : t.garage.available;
+        const state = i.status === "paused" ? t.garage.paused : out.has(i.id) ? t.garage.out : null;
         return (
           <Row key={i.id} href={`/garage/${i.id}`}>
             {thumb ? (
@@ -71,7 +71,7 @@ export default async function GaragePage({ searchParams }: PageProps<"/garage">)
               <span className="block truncate">{i.name}</span>
               <span className="block truncate text-sm text-muted">{i.households?.name}</span>
             </span>
-            <span className={`ml-auto shrink-0 text-sm ${state === t.garage.available ? "" : "text-muted"}`}>{state}</span>
+            {state && <span className="ml-auto shrink-0 text-sm text-muted">{state}</span>}
           </Row>
         );
       }) : <Empty />}
