@@ -7,8 +7,12 @@ import { t } from "@/strings/en";
 
 export default async function NewIssuePage({ searchParams }: PageProps<"/issues/new">) {
   const me = await requireMember();
-  const { about } = await searchParams;
+  const { about, item } = await searchParams;
+  const itemId = typeof item === "string" ? item : "";
   const supabase = await createClient();
+  const { data: linked } = itemId
+    ? await supabase.from("garage_items").select("id, name").eq("id", itemId).maybeSingle()
+    : { data: null };
   const { data: people } = await supabase
     .from("profiles")
     .select("id, display_name")
@@ -20,6 +24,12 @@ export default async function NewIssuePage({ searchParams }: PageProps<"/issues/
   return (
     <Page title={t.issues.new} info={t.issues.info}>
       <ActionForm action={reportIssue}>
+        {linked && (
+          <>
+            <input type="hidden" name="item" value={linked.id} />
+            <p className="pt-2">{linked.name}</p>
+          </>
+        )}
         <Field label={t.issues.about}>
           <Select name="about" defaultValue={typeof about === "string" ? about : ""}>
             <option value="">{t.issues.nobody}</option>

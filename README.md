@@ -2,7 +2,7 @@
 
 A sharing site for a small group of neighbors in Kensington, Philadelphia. Pilot on one block. Open source under AGPL-3.0 (see `LICENSE`).
 
-Status: v0 (logins, people, households, invites, problems) runs locally. Not deployed yet.
+Status: v0 (logins, people, households, invites, problems) is live for testing. v1 Garage Share is in progress.
 
 ## Docs
 
@@ -12,6 +12,7 @@ Status: v0 (logins, people, households, invites, problems) runs locally. Not dep
 - [docs/comps.md](docs/comps.md): existing tools to learn from
 - [docs/versions/](docs/versions/): one spec per version
 - [docs/prompts/kickoff.md](docs/prompts/kickoff.md): prompt to start v0 with any coding agent
+- [docs/prompts/review-v1.md](docs/prompts/review-v1.md): prompt to walk a reviewer through v0 and v1
 
 ## Contributing with any agent
 
@@ -42,11 +43,12 @@ Open http://localhost:3000 and sign in with any email from `supabase/seed.sql`, 
 
 ## Deploying
 
-Not done yet. The plan: a free Supabase project and a free Vercel project.
+Runs on a free Supabase project and a free Vercel project. Email goes through Resend's free plan from `mail.kenzoshare.org`.
 
 1. Supabase: create the project, run `supabase link` and `supabase db push`, turn off public signups, paste `supabase/templates/*.html` into the email templates, set custom SMTP (Supabase's built-in email only reaches your own team), and set the site URL to https://kenzoshare.org.
 2. Vercel: import the repo and set the variables from `.env.example`. `vercel.json` schedules a daily ping so the free database doesn't pause.
-3. Make the first stewards by setting `role = 'steward'` on their profiles in the Supabase dashboard.
+3. Garage Share emails need `RESEND_API_KEY` in Vercel: a Resend key with sending access only.
+4. Make the first stewards by setting `role = 'steward'` on their profiles in the Supabase dashboard.
 
 ## Privacy rule
 

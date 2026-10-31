@@ -13,8 +13,8 @@ export async function MyRecord() {
     supabase.rpc("my_stats"),
     supabase
       .from("activity_events")
-      .select("id, event_type, created_at")
-      .eq("actor_id", me.id)
+      .select("id, event_type, actor_id, created_at")
+      .or(`actor_id.eq.${me.id},counterpart_id.eq.${me.id}`)
       .order("created_at", { ascending: false })
       .limit(100),
     supabase
@@ -24,14 +24,15 @@ export async function MyRecord() {
       .order("created_at", { ascending: false }),
   ]);
 
-  const counts = (stats ?? []).filter((s) => s.n > 0);
+  const label = (eventType: string, asCounterpart: boolean) =>
+    (asCounterpart ? t.counterpartEvents[eventType] : t.events[eventType]) ?? eventType;
 
   return (
     <>
       <Section title={t.profile.record} info={t.profile.recordInfo}>
-        {counts.length === 0 ? <Empty /> : counts.map((s) => (
-          <Row key={`${s.module}-${s.event_type}`}>
-            <span>{t.events[s.event_type] ?? t.stats[s.event_type] ?? s.event_type}</span>
+        {!stats?.length ? <Empty /> : stats.map((s) => (
+          <Row key={`${s.module}-${s.event_type}-${s.as_counterpart}`}>
+            <span>{label(s.event_type, s.as_counterpart)}</span>
             <span className="ml-auto tabular-nums">{s.n}</span>
           </Row>
         ))}
@@ -40,7 +41,7 @@ export async function MyRecord() {
       <Section title={t.profile.activity}>
         {events?.length ? events.map((e) => (
           <Row key={e.id}>
-            <span>{t.events[e.event_type] ?? e.event_type}</span>
+            <span>{label(e.event_type, e.actor_id !== me.id)}</span>
             <span className="ml-auto text-muted">{formatDate(e.created_at)}</span>
           </Row>
         )) : <Empty />}
