@@ -40,6 +40,7 @@
 
 ## Open questions
 
+- Proposed while closing the v1 review (2026-10-31), for Wes to confirm: stewards can see hand-over and return photos, alongside the borrower and the owning household. Leaving cancels a person's pending requests, so nobody is asked to hand an item to a former member. A former member can't attach a photo when returning or handing off. A former member sees a problem they're part of, but not the name of who it's about (they can't read other profiles).
 - How to stay open while staying safe once the group outgrows the pilot cap.
 - Long term: free software with paid setup/consulting for other neighborhoods? First, make something people want.
 - Streaming logins: worth trying at all?
