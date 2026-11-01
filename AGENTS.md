@@ -69,7 +69,7 @@ Future modules add their own tables and write to the same activity_events and is
 - There are no repository skills today. If skills are added, maintain one shared collection, document its source and compatibility limitations, and add discovery adapters only for the agents contributors actually use.
 
 ## Verification
-Local setup needs Node 22, a Docker-compatible runtime (Docker, Podman, or Colima), and the Supabase CLI. For rootless Podman on Linux, see [README.md](README.md#podman-on-linux) for socket setup and `DOCKER_HOST`.
+Local setup needs Node 22, a Docker-compatible runtime (Docker, Podman, or Colima), and the Supabase CLI.
 
 ```bash
 npm install

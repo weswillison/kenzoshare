@@ -31,15 +31,12 @@ See the Verification section of [AGENTS.md](AGENTS.md) for the current checks.
 Run all tests, or a single suite:
 
 ```bash
-npm run test         # unit, database, then browser tests; stops on failure
-npm run test:unit    # container-runtime selection regression tests
+npm run test         # database, then browser tests; stops on failure
 npm run test:db      # SQL/RLS tests against the running local Supabase stack
 npm run test:e2e     # browser flows against local Supabase and Mailpit
 ```
 
-`test:db` loads `.env.local` and runs this checkout's SQL/RLS tests through the Supabase CLI, which must be on your `PATH`. On Linux it prefers Docker when its API responds, otherwise it detects a responding rootless Podman socket. An explicit `DOCKER_HOST` in your shell or `.env.local` takes precedence. If neither API responds, Supabase reports its normal connection error. Start the stack and apply migrations and seed data before testing; the npm commands do not reset the database. Browser setup is described below.
-
-For a separate stack, put `SUPABASE_WORKDIR=/path/to/stack` alongside that stack's browser URLs and keys in `.env.local`. Both `npm run test` and `npm run test:db` then use that configuration without extra shell exports. You can also forward CLI flags: `npm run test:db -- --workdir /path/to/stack`. The database tests use `SUPABASE_WORKDIR` or the repository's Supabase config; the browser tests use the URLs and keys, so keep them pointed at the same stack.
+`test:db` runs `supabase test db`, so the Supabase CLI must be on your `PATH`. Start the stack and apply migrations and seed data before testing; the npm commands do not reset the database. Browser setup is described below.
 
 ## Running locally
 
@@ -64,13 +61,13 @@ export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"
 supabase start
 ```
 
-Direct Supabase commands, such as starts and resets, need `DOCKER_HOST` set in their terminal. The npm database-test command detects a responding rootless Podman socket automatically when Docker is unavailable, including when its socket exists but is inaccessible. These commands use the regular Supabase runtime, which supports the custom email templates used by this app. The experimental native runtime currently rejects those templates. No Docker daemon or experimental Supabase settings are needed. See the [Podman API service documentation](https://docs.podman.io/en/latest/markdown/podman-system-service.1.html).
+Every Supabase command, including `npm run test:db`, needs `DOCKER_HOST` set in its terminal. These commands use the regular Supabase runtime, which supports the custom email templates used by this app. The experimental native runtime currently rejects those templates. No Docker daemon or experimental Supabase settings are needed. See the [Podman API service documentation](https://docs.podman.io/en/latest/markdown/podman-system-service.1.html).
 
 ## Browser tests
 
-The small Playwright suite in [e2e/core.spec.ts](e2e/core.spec.ts) covers the v0 happy paths at phone width in Chromium: emailed sign-in and sign-out, profile edits and the directory, invite acceptance and creating a household, joining an existing household with approval, and reporting and resolving a private problem. It also checks that an unrelated member cannot open that problem. Garage Share coverage belongs with v1, which is not on this branch yet.
+The small Playwright suite in [e2e/core.spec.ts](e2e/core.spec.ts) covers the v0 happy paths at phone width in Chromium: emailed sign-in and sign-out, profile edits and the directory, invite acceptance and creating a household, joining an existing household with approval, and reporting and resolving a private problem. It also checks that an unrelated member cannot open that problem. Garage Share is not covered yet.
 
-Use Node 22 and the disposable local Supabase stack, with the local keys from `supabase status` in `.env.local` as described above. With Podman, set `DOCKER_HOST` as shown above when running direct Supabase commands. No hosted accounts are needed.
+Use Node 22 and the disposable local Supabase stack, with the local keys from `supabase status` in `.env.local` as described above. With Podman, set `DOCKER_HOST` as shown above. No hosted accounts are needed.
 
 ```bash
 npm ci
