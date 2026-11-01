@@ -47,5 +47,3 @@
 - Streaming logins: worth trying at all?
 - Car share: insurance answer.
 - Childcare: PA licensing check before any regular shared care.
-- Stuck invites: when an invite fails to send and can't be cleaned up, its pending row blocks inviting that email again, and only someone with the Supabase dashboard can remove it. Should stewards be able to cancel an invite, should pending invites expire, or both?
-- Joining without a voucher: if the invite email fails after Supabase has already created the account, the invite row is removed but the account stays. If that person later signs in, they join with no voucher on record. Allow it, have a steward vouch, or block sign-in without a pending invite?
