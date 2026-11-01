@@ -6,7 +6,8 @@ Know what's available, borrow it easily, and always know who has it.
 ## Must have
 - List an item: name, category, photo, condition, replacement cost, where it lives, what comes with it (free text, e.g. "charger, two batteries, impact bits"), notes
 - Browse and search items
-- Borrow, return, hand off directly to another member
+- Request to borrow. The owner's household confirms the hand-over. If the item is out, the request joins a waitlist.
+- Return, or hand off directly to the next person on the waitlist
 - Either the borrower or the owner can mark an item returned. The owner can confirm a return. The item is available again as soon as it's marked returned. If the owner says it never came back, that's an issue.
 - Owner can pause lending on an item, open-ended or snoozed for 1 week, 1 month, or a custom length. When a snooze ends, the item stays paused and the owner sees a prompt on their next visit ("Lend it again?"). No email.
 - Categories from a short fixed list: Tools, Gardening, Outdoors & sports. Ladders go in Tools. Stewards can add more.
@@ -14,9 +15,11 @@ Know what's available, borrow it easily, and always know who has it.
 - Each item shows who has it now and since when
 - Replacement cost shown before borrowing
 - Damage or loss filed as an issue linked to the item
+- Optional photo at hand-over and return
+- Email the owner's household when someone requests an item, and the next person in line when it comes back. Nothing else.
 
 ## Not in scope
-Reservations, waitlists, due-date reminders, QR codes, fines, renewals.
+Reservations for specific dates, due-date reminders, QR codes, fines, renewals.
 
 ## Guidance for members
 - If a part is ever borrowed on its own (a set of impact bits, a ladder extension), list it as its own item. Otherwise put it in "comes with."

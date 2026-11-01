@@ -15,6 +15,7 @@ export default async function PersonPage({ params }: PageProps<"/people/[id]">) 
     .eq("id", id)
     .maybeSingle();
   if (!p) notFound();
+  const { data: facts } = await supabase.rpc("profile_facts", { p_profile: p.id }).maybeSingle();
   const { data: inviter } = p.invited_by
     ? await supabase.from("profiles").select("id, display_name").eq("id", p.invited_by).maybeSingle()
     : { data: null };
@@ -29,6 +30,13 @@ export default async function PersonPage({ params }: PageProps<"/people/[id]">) 
   return (
     <Page title={p.display_name}>
       {p.bio && <p className="pb-2">{p.bio}</p>}
+      {facts && (facts.things_lent > 0 || facts.times_borrowed > 0) && (
+        <p className="pb-2 text-muted">
+          {[facts.things_lent > 0 && t.person.lends(facts.things_lent), facts.times_borrowed > 0 && t.person.borrowed(facts.times_borrowed)]
+            .filter(Boolean)
+            .join(" · ")}
+        </p>
+      )}
 
       <Section title={t.person.contact}>
         {contacts.map((c) => (
