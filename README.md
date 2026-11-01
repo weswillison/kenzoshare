@@ -46,7 +46,7 @@ Open http://localhost:3000 and sign in with any email from `supabase/seed.sql`, 
 Runs on a free Supabase project and a free Vercel project. Email goes through Resend's free plan from `mail.kenzoshare.org`.
 
 1. Supabase: create the project, run `supabase link` and `supabase db push`, turn off public signups, paste `supabase/templates/*.html` into the email templates, set custom SMTP (Supabase's built-in email only reaches your own team), and set the site URL to https://kenzoshare.org.
-2. Vercel: import the repo and set the variables from `.env.example`. `vercel.json` schedules a daily ping so the free database doesn't pause.
+2. Vercel: import the repo and set the variables from `.env.example`. Copy the Supabase secret key (it starts with `sb_secret_`) from the dashboard under Project Settings → API Keys; the CLI's `projects api-keys` output didn't work as a secret key. `vercel.json` schedules a daily ping so the free database doesn't pause.
 3. Garage Share emails need `RESEND_API_KEY` in Vercel: a Resend key with sending access only.
 4. Make the first stewards by setting `role = 'steward'` on their profiles in the Supabase dashboard.
 
