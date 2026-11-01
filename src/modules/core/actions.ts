@@ -140,7 +140,7 @@ export async function sendInvite(_: FormState, form: FormData): Promise<FormStat
     console.error("sendInvite: send failed", sendError.status, sendError.code);
     const { error: cleanupError } = await admin.from("invites").delete().eq("id", invite.id);
     // If this fails too, the stuck row blocks re-inviting the address until someone deletes it in the Supabase dashboard.
-    if (cleanupError) console.error("sendInvite: cleanup failed", cleanupError.code, cleanupError.message);
+    if (cleanupError) console.error("sendInvite: cleanup failed", cleanupError.code);
     return { error: t.invite.failed };
   }
   revalidatePath("/invite");
