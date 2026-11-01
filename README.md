@@ -28,9 +28,19 @@ Follow the shared contribution and verification conventions in AGENTS.md, includ
 
 See the Verification section of [AGENTS.md](AGENTS.md) for the current checks.
 
+Run all tests, or a single suite:
+
+```bash
+npm run test         # database, then browser tests; stops on failure
+npm run test:db      # SQL/RLS tests against the running local Supabase stack
+npm run test:e2e     # browser flows against local Supabase and Mailpit
+```
+
+`test:db` runs `supabase test db`, so the Supabase CLI must be on your `PATH`. Start the stack and apply migrations and seed data before testing; the npm commands do not reset the database. Browser setup is described below.
+
 ## Running locally
 
-Needs Node 22, Docker (or Colima), and the [Supabase CLI](https://supabase.com/docs/guides/local-development).
+Needs Node 22, a Docker-compatible container runtime (Docker, Podman, or Colima), and the [Supabase CLI](https://supabase.com/docs/guides/local-development).
 
 ```bash
 npm install
@@ -40,6 +50,51 @@ npm run dev
 ```
 
 Open http://localhost:3000 and sign in with any email from `supabase/seed.sql`, such as `sam@example.test` (a steward). The sign-in link arrives in Mailpit at http://127.0.0.1:54324.
+
+### Podman on Linux
+
+With rootless Podman installed, start its Docker-compatible API socket and point the Supabase CLI at it:
+
+```bash
+systemctl --user start podman.socket
+export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"
+supabase start
+```
+
+Every Supabase command, including `npm run test:db`, needs `DOCKER_HOST` set in its terminal. These commands use the regular Supabase runtime, which supports the custom email templates used by this app. The experimental native runtime currently rejects those templates. No Docker daemon or experimental Supabase settings are needed. See the [Podman API service documentation](https://docs.podman.io/en/latest/markdown/podman-system-service.1.html).
+
+## Browser tests
+
+The small Playwright suite in [e2e/core.spec.ts](e2e/core.spec.ts) covers the v0 happy paths at phone width in Chromium: emailed sign-in and sign-out, profile edits and the directory, invite acceptance and creating a household, joining an existing household with approval, and reporting and resolving a private problem. It also checks that an unrelated member cannot open that problem. Garage Share is not covered yet.
+
+Use Node 22 and the disposable local Supabase stack, with the local keys from `supabase status` in `.env.local` as described above. With Podman, set `DOCKER_HOST` as shown above. No hosted accounts are needed.
+
+```bash
+npm ci
+npx playwright install chromium     # once, and after Playwright upgrades
+supabase start
+supabase db reset --local           # deletes local data and restores the fake seed
+npm run test:e2e
+```
+
+Stop any app running on the test port first. By default, Playwright builds and starts its own production server at `NEXT_PUBLIC_SITE_URL` (default http://localhost:3000), then stops it when finished. The build needs network access to download the app's Google font. Supabase and Mailpit stay running. The configuration reads `.env.local` and accepts only local HTTP URLs; use only local keys. On Linux, Playwright may ask you to install browser system dependencies with `npx playwright install-deps chromium`.
+
+For a separate local stack, use its API URL and keys in `.env.local`, set `NEXT_PUBLIC_SITE_URL` to match that stack's Auth site URL, and set `E2E_MAILPIT_URL` to its mail service URL (default http://127.0.0.1:54324). Each stack needs a unique `project_id` and ports in its Supabase config. Reset only the disposable stack whose config you are using; `supabase --workdir /path/to/stack ...` selects a separate config directory. If Node is managed by mise, `mise exec node@22 -- npm run test:e2e` runs the suite with the required Node version.
+
+Tests use real email links captured by Mailpit, separate browser sessions for neighbors, and real database writes. They do not mock Supabase, bypass login, or clear the inbox. New invitees have unique `@example.test` emails, and the email helper ignores messages that existed before each request. Each flow signs in a different seed member to avoid per-user email cooldowns, and one worker keeps shared seed data predictable. Reruns work without resetting, but they leave fake invites, households, issues, history, and edits to Rosa's profile behind. Reset again for a clean baseline. If you hit local Auth rate limits after repeated runs, wait for their window to expire.
+
+```bash
+npm run test:e2e -- --list          # discover tests without starting services
+npm run test:e2e -- --headed        # watch the phone-sized browser
+npm run test:e2e -- -g "reports"    # run just the problem flow
+npx playwright show-report
+```
+
+Every run builds the app first. To iterate on a test without rebuilding, start the app yourself with the same local `.env.local` (`npm run build && npm run start`, or `npm run dev`) and run `E2E_REUSE_SERVER=1 npm run test:e2e -- -g "reports"`. Playwright then uses the app already on the test port and skips its setup check, so make sure Supabase and Mailpit are running.
+
+Failures retain traces and screenshots in the ignored `test-results/` directory; the HTML report is in `playwright-report/`. Selectors use form field names and link paths, plus explicit test IDs for household join actions and signing out. UI wording and styling can change without rewriting those selectors.
+
+Keep detailed permission and data-rule coverage in `supabase/tests/`; these browser tests are a few checks that the main pieces work together. Add focused unit tests when substantial pure logic appears (for example, grocery cost calculations), rather than adding component snapshots or another test framework now. CI is still pending; when added, run the existing verification checks and this suite against a fresh local Supabase stack.
 
 ## Deploying
 

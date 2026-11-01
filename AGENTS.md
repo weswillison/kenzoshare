@@ -4,7 +4,7 @@
 kenzoshare.org is a sharing site for a small group of neighbors in Kensington, Philadelphia, piloting on one block. It covers things hard to do or own alone: Garage Share (tools and gear), Grocery Share (shared grocery runs), and later a car, shared meals, and childcare. The plan is in [docs/plan.md](docs/plan.md). Decisions and open questions are in [docs/decisions.md](docs/decisions.md).
 
 ## Current state and starting work
-v0 Core and v1 Garage Share are live at https://kenzoshare.vercel.app (Wes and Preston only, until the pilot households are invited). Garage Share lives in `src/modules/garage/` and `supabase/migrations/`, switched on in `src/modules.config.ts`. Next up: the invite fixes in issue 10, then v2 Grocery Share. Schema and RLS are in `supabase/migrations/`, RLS tests in `supabase/tests/`, fake seed data in `supabase/seed.sql`. There is no CI yet. Update this section and Verification when that changes.
+v0 Core and v1 Garage Share are live at https://kenzoshare.vercel.app (Wes and Preston only, until the pilot households are invited). Garage Share lives in `src/modules/garage/` and `supabase/migrations/`, switched on in `src/modules.config.ts`. Next up: the invite fixes in issue 10, then v2 Grocery Share. Schema and RLS are in `supabase/migrations/`, RLS tests in `supabase/tests/`, fake seed data in `supabase/seed.sql`, and Playwright browser tests in `e2e/`. There is no CI yet. Update this section and Verification when that changes.
 
 - Read this file, [docs/plan.md](docs/plan.md), [docs/decisions.md](docs/decisions.md), and the relevant version spec before making changes.
 - Work only on the requested issue or version. Documentation work does not authorize scaffolding or feature implementation.
@@ -69,7 +69,7 @@ Future modules add their own tables and write to the same activity_events and is
 - There are no repository skills today. If skills are added, maintain one shared collection, document its source and compatibility limitations, and add discovery adapters only for the agents contributors actually use.
 
 ## Verification
-Local setup needs Node 22, Docker (or Colima), and the Supabase CLI.
+Local setup needs Node 22, a Docker-compatible runtime (Docker, Podman, or Colima), and the Supabase CLI.
 
 ```bash
 npm install
@@ -85,6 +85,7 @@ Before a pull request, run and report:
 - `supabase db reset` applies every migration and the seed from scratch.
 - `supabase test db` runs the RLS tests. Every table needs a test proving a member can't read or edit what they shouldn't.
 - `npx tsc --noEmit`, `npm run lint`, and `npm run build`.
+- `npm run test:e2e` runs the main v0 flows at phone width against local Supabase and Mailpit. Install Chromium with `npx playwright install chromium`, use local keys in `.env.local`, and stop any app on the test port (default 3000) first; Playwright builds and starts its own server. Reset the disposable local database before a clean run. See [README.md](README.md#browser-tests) for setup, retained artifacts, and test data left behind.
 - After a schema change, `supabase gen types typescript --local > src/lib/database.types.ts`.
 - For UI changes, click through the flow at phone width.
 - For documentation changes, `git diff --check`, and check that links resolve and instructions match the repository.

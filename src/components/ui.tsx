@@ -31,12 +31,12 @@ export function Section({ title, info, action, children }: {
   );
 }
 
-export function Row({ href, children }: { href?: string; children: ReactNode }) {
+export function Row({ href, testId, children }: { href?: string; testId?: string; children: ReactNode }) {
   const cls = "flex min-h-12 items-center gap-3 border-b border-line py-2";
   return href ? (
-    <Link href={href} className={`${cls} hover:bg-hover`}>{children}</Link>
+    <Link href={href} data-testid={testId} className={`${cls} hover:bg-hover`}>{children}</Link>
   ) : (
-    <div className={cls}>{children}</div>
+    <div data-testid={testId} className={cls}>{children}</div>
   );
 }
 
