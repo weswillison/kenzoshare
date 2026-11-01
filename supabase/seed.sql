@@ -83,3 +83,39 @@ select set_config('request.jwt.claims', '', false);
 
 insert into public.invites (inviter_id, email)
 select id, 'friend.of.sam@example.test' from seed_ids where n = 1;
+
+-- Garage Share. Listing logs an event as the signed-in person, so each
+-- item is inserted acting as its owner.
+create temporary table seed_items (n int, owner int, category text, name text, cost int, comes_with text, location text, condition text);
+insert into seed_items values
+  (1, 1,  'Tools',             'Extension ladder (24 ft)', 25000, null,                              'Side alley',    'Sturdy, a little paint on it'),
+  (2, 1,  'Tools',             'Pressure washer',          18000, 'Two nozzles, 25 ft hose',         'Basement',      'Works well'),
+  (3, 3,  'Outdoors & sports', 'Four-person tent',         20000, 'Stakes, rain fly',                'Hall closet',   'One small patch on the floor'),
+  (4, 3,  'Outdoors & sports', 'Floor bike pump',           4000, null,                              'Front hall',    'Works well'),
+  (5, 5,  'Gardening',         'Wheelbarrow',               9000, null,                              'Back yard',     'Tire holds air'),
+  (6, 5,  'Gardening',         'Hedge trimmer',            12000, 'Battery and charger',             'Shed',          'Sharp'),
+  (7, 9,  'Outdoors & sports', 'Paddle board',             60000, 'Paddle, leash, pump',             'Basement',      'Good'),
+  (8, 7,  'Tools',             'Cordless drill',           15000, 'Charger, two batteries, bit set', 'Kitchen drawer','Works well');
+
+do $$
+declare r record;
+begin
+  for r in
+    select s.*, ('20000000-0000-4000-8000-' || lpad(s.n::text, 12, '0'))::uuid as item_id, i.id as owner_id, p.household_id
+      from seed_items s join seed_ids i on i.n = s.owner join public.profiles p on p.id = i.id
+  loop
+    perform set_config('request.jwt.claims', json_build_object('sub', r.owner_id)::text, true);
+    insert into public.garage_items (id, household_id, category_id, name, replacement_cost_cents, comes_with, location, condition, created_by)
+    values (r.item_id, r.household_id, (select id from public.garage_categories where name = r.category),
+            r.name, r.cost, r.comes_with, r.location, r.condition, r.owner_id);
+  end loop;
+  perform set_config('request.jwt.claims', '', true);
+end $$;
+
+-- Rosa has the tent and Omar is waiting for it. Dana asked for the drill.
+insert into public.garage_loans (item_id, borrower_id, started_by, started_at, due_on)
+select '20000000-0000-4000-8000-000000000003', (select id from seed_ids where n = 2), (select id from seed_ids where n = 3),
+       now() - interval '4 days', (now() + interval '3 days')::date;
+insert into public.garage_requests (item_id, requester_id, created_at) values
+  ('20000000-0000-4000-8000-000000000003', (select id from seed_ids where n = 12), now() - interval '1 day'),
+  ('20000000-0000-4000-8000-000000000008', (select id from seed_ids where n = 11), now() - interval '2 hours');

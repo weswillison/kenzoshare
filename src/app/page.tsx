@@ -4,6 +4,8 @@ import { decideJoin } from "@/modules/core/actions";
 import { requireMember } from "@/modules/core/me";
 import { createClient } from "@/lib/supabase/server";
 import { t } from "@/strings/en";
+import { modules } from "@/modules.config";
+import { GarageHome } from "@/modules/garage/home-section";
 
 export default async function Home() {
   const me = await requireMember();
@@ -47,6 +49,8 @@ export default async function Home() {
           ))}
         </Section>
       )}
+
+      {modules.garage && <GarageHome meId={me.id} householdId={me.household_id} />}
 
       <Section title={t.home.people} action={<TextLink href="/invite">+ {t.home.invite}</TextLink>}>
         {people?.length ? people.map((p) => (
